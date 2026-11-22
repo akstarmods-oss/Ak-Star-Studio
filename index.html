@@ -1,1 +1,2749 @@
-a
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Shubh Vivaah — Aarav &amp; Ananya | Ak ⭐ Studio</title>
+
+  <!-- Google Fonts: Playfair Display & Montserrat -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ivory: '#fdf6f3',
+            blush: '#f8e8e4',
+            wine: '#6e1f2f',
+            wineDark: '#4a111d',
+            gold: '#c9a25e',
+            goldLight: '#e5c98c',
+            goldDark: '#9e7a3b',
+            ink: '#3c2529'
+          },
+          fontFamily: {
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+            sans: ['"Montserrat"', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* ============================================================
+       DESIGN TOKENS & MOBILE-FIRST STAGE
+       ============================================================ */
+    :root {
+      --ivory: #fdf6f3;
+      --blush: #f8e8e4;
+      --wine: #6e1f2f;
+      --wine-dark: #48101c;
+      --gold: #c9a25e;
+      --gold-light: #e5c98c;
+      --gold-dark: #9c7738;
+      --ink: #3c2529;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background-color: #f3e2dc;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Montserrat', sans-serif;
+      color: var(--ink);
+      background: radial-gradient(circle at 50% 18%, #f9ece7 0%, #ead4cc 100%);
+      min-height: 100svh;
+      overflow-x: hidden;
+      display: flex;
+      justify-content: center;
+    }
+
+    body.invite-locked {
+      overflow: hidden;
+      height: 100svh;
+    }
+
+    /* Centered 430px phone canvas on desktop, full-bleed on phones */
+    #app-stage {
+      position: relative;
+      width: 100%;
+      max-width: 430px;
+      min-height: 100svh;
+      background: linear-gradient(180deg, #fdf6f3 0%, #fbf0ec 24%, #fdf6f3 52%, #f8e8e4 80%, #fdf6f3 100%);
+      overflow-x: clip;
+      box-shadow: 0 24px 72px rgba(74, 17, 29, 0.18);
+    }
+
+    @media (max-width: 460px) {
+      body {
+        background: #fdf6f3;
+      }
+      #app-stage {
+        max-width: 100%;
+        box-shadow: none;
+      }
+    }
+
+    /* Subtle artisanal cotton-paper texture */
+    .paper-grain::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 430px;
+      height: 100%;
+      pointer-events: none;
+      z-index: 4;
+      opacity: 0.24;
+      background-image: radial-gradient(rgba(110, 31, 47, 0.055) 1px, transparent 0);
+      background-size: 20px 20px;
+    }
+
+    /* ============================================================
+       PRELOADER & 3D WINE-VELVET BOOK OVERLAY
+       ============================================================ */
+    #book-overlay {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 430px;
+      height: 100svh;
+      z-index: 60;
+      background: radial-gradient(circle at 50% 42%, #faede8 0%, #eed7cf 64%, #e3c2b7 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 1.1s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    #book-overlay.opening-zoom {
+      transform: translateX(-50%) scale(1.22);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #preloader {
+      position: absolute;
+      inset: 0;
+      z-index: 70;
+      background: radial-gradient(circle at 50% 45%, #fdf6f3 0%, #f4e2db 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.65s ease;
+    }
+
+    #preloader.fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .loader-ring {
+      width: 84px;
+      height: 84px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(201, 162, 94, 0.22);
+      border-top-color: var(--gold);
+      animation: spinSlow 1.4s linear infinite;
+    }
+
+    @keyframes spinSlow {
+      to { transform: rotate(360deg); }
+    }
+
+    /* 3D Book Perspective */
+    .book-scene {
+      position: relative;
+      width: 246px;
+      height: 334px;
+      perspective: 1400px;
+      cursor: pointer;
+      z-index: 10;
+      user-select: none;
+      transition: transform 0.45s ease;
+    }
+
+    .book-scene:active {
+      transform: scale(0.985);
+    }
+
+    .book-body {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      filter: drop-shadow(0 28px 34px rgba(72, 16, 28, 0.35));
+    }
+
+    .book-inner-page {
+      position: absolute;
+      inset: 2px 0 2px 6px;
+      border-radius: 3px 12px 12px 3px;
+      background: linear-gradient(90deg, #e7d8cd 0%, #fdf6f3 10%, #fffcfa 92%, #efe2d7 100%);
+      box-shadow: inset 12px 0 22px rgba(110, 31, 47, 0.12);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      text-align: center;
+      border: 1px solid rgba(201, 162, 94, 0.38);
+    }
+
+    .book-pages-edge {
+      position: absolute;
+      top: 5px;
+      right: -6px;
+      width: 10px;
+      height: calc(100% - 10px);
+      background: repeating-linear-gradient(
+        90deg,
+        #f8f0e9 0px,
+        #e4d3c5 1px,
+        #fdf6f3 2px
+      );
+      border-radius: 0 4px 4px 0;
+      box-shadow: inset -2px 0 4px rgba(74, 17, 29, 0.14);
+    }
+
+    /* Wine-Velvet Front Cover */
+    .book-front-cover {
+      position: absolute;
+      inset: 0;
+      border-radius: 4px 12px 12px 4px;
+      transform-origin: left center;
+      transform-style: preserve-3d;
+      transition: transform 1.25s cubic-bezier(0.32, 0.04, 0.18, 1);
+      background:
+        radial-gradient(circle at 28% 22%, rgba(164, 55, 78, 0.52) 0%, transparent 56%),
+        radial-gradient(circle at 82% 86%, rgba(50, 8, 18, 0.72) 0%, transparent 60%),
+        linear-gradient(135deg, #7d2436 0%, #6e1f2f 46%, #4f1320 100%);
+      box-shadow:
+        inset 14px 0 20px rgba(34, 6, 12, 0.45),
+        inset 2px 0 2px rgba(229, 201, 140, 0.3),
+        inset -2px 0 8px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+    }
+
+    .book-front-cover::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 14px;
+      width: 2px;
+      background: linear-gradient(180deg, rgba(0, 0, 0, 0.32), rgba(255, 226, 174, 0.2), rgba(0, 0, 0, 0.34));
+    }
+
+    .book-front-cover::after {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background: linear-gradient(115deg, transparent 42%, rgba(255, 232, 189, 0.11) 50%, transparent 58%);
+      animation: velvetSheen 5.5s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    @keyframes velvetSheen {
+      0%, 100% { transform: translateX(-35%); }
+      50% { transform: translateX(35%); }
+    }
+
+    .book-scene.is-open .book-front-cover {
+      transform: rotateY(-154deg);
+    }
+
+    .book-cover-backface {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #5a1725, #47101b);
+      border-radius: 12px 4px 4px 12px;
+      transform: rotateY(180deg);
+      backface-visibility: hidden;
+    }
+
+    .tap-pulse {
+      animation: tapPulse 2.1s ease-in-out infinite;
+    }
+
+    @keyframes tapPulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(110, 31, 47, 0.28); }
+      50% { transform: scale(1.06); box-shadow: 0 0 0 12px rgba(110, 31, 47, 0); }
+    }
+
+    /* ============================================================
+       PARALLAX ROSES & HANGING MARIGOLD GARLANDS
+       ============================================================ */
+    .parallax-layer {
+      will-change: transform;
+      transition: transform 0.22s cubic-bezier(0.2, 0.7, 0.3, 1);
+    }
+
+    .garland-wrap {
+      transform-origin: top center;
+      will-change: transform;
+      transition: transform 0.25s ease-out;
+    }
+
+    .garland-sway {
+      transform-origin: top center;
+      animation: gentleSway 4.8s ease-in-out infinite alternate;
+    }
+
+    .garland-sway-delay {
+      transform-origin: top center;
+      animation: gentleSway 5.5s ease-in-out 0.7s infinite alternate-reverse;
+    }
+
+    @keyframes gentleSway {
+      0% { transform: rotate(-2.5deg); }
+      100% { transform: rotate(2.5deg); }
+    }
+
+    .rose-breathe {
+      animation: roseBreathe 6.4s ease-in-out infinite alternate;
+    }
+
+    @keyframes roseBreathe {
+      0% { transform: scale(1) rotate(0deg); }
+      100% { transform: scale(1.05) rotate(2.5deg); }
+    }
+
+    /* ============================================================
+       HERO ARCH & LETTER-BY-LETTER BLUR-IN REVEAL
+       ============================================================ */
+    .hero-arch {
+      border-radius: 210px 210px 18px 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slow-zoom-bg {
+      animation: slowKenBurns 18s ease-in-out infinite alternate;
+      will-change: transform;
+    }
+
+    @keyframes slowKenBurns {
+      0% { transform: scale(1.02) translateY(0px); }
+      100% { transform: scale(1.13) translateY(-8px); }
+    }
+
+    .name-char {
+      display: inline-block;
+      opacity: 0;
+      filter: blur(5px);
+      transform: translateY(10px) scale(0.94);
+      transition:
+        opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+        transform 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+        filter 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .name-char.visible {
+      opacity: 1;
+      filter: blur(0px);
+      transform: translateY(0) scale(1);
+    }
+
+    .bounce-chevron {
+      animation: bounceDown 2s ease-in-out infinite;
+    }
+
+    @keyframes bounceDown {
+      0%, 100% { transform: translateY(0); opacity: 0.65; }
+      50% { transform: translateY(6px); opacity: 1; }
+    }
+
+    /* Scroll reveal */
+    .reveal-item {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1), transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .reveal-item.in-view {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ============================================================
+       SAVE THE DATE — PULL-TO-REVEAL SCROLL
+       ============================================================ */
+    .gold-rod {
+      position: relative;
+      height: 15px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #f3dfa6 0%, #d4b064 38%, #a67f37 82%, #c9a152 100%);
+      box-shadow: 0 5px 12px rgba(102, 70, 24, 0.25), inset 0 1px 1px rgba(255, 252, 236, 0.78);
+    }
+
+    .gold-knob {
+      position: absolute;
+      top: 50%;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      transform: translateY(-50%);
+      background: radial-gradient(circle at 35% 32%, #fff3cf 0%, #dfc076 42%, #9a732f 100%);
+      box-shadow: 0 4px 10px rgba(96, 65, 20, 0.28);
+    }
+
+    .gold-knob.left { left: -10px; }
+    .gold-knob.right { right: -10px; }
+
+    .scroll-parchment {
+      background: linear-gradient(180deg, #f8eee5 0%, #fffbf7 14%, #fffcf9 86%, #f4e6da 100%);
+      box-shadow:
+        0 14px 32px rgba(110, 31, 47, 0.1),
+        inset 0 12px 18px -12px rgba(140, 102, 46, 0.28),
+        inset 0 -12px 18px -12px rgba(140, 102, 46, 0.28);
+      overflow: hidden;
+      will-change: height;
+    }
+
+    .scroll-parchment.smooth-snap {
+      transition: height 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .tassel-handle {
+      touch-action: none;
+      cursor: grab;
+      user-select: none;
+    }
+
+    .tassel-handle:active {
+      cursor: grabbing;
+    }
+
+    .tassel-sway {
+      transform-origin: top center;
+      animation: tasselHint 2.6s ease-in-out infinite;
+    }
+
+    @keyframes tasselHint {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      35% { transform: translateY(6px) rotate(-2deg); }
+      65% { transform: translateY(0) rotate(2deg); }
+    }
+
+    .finger-cue {
+      animation: fingerPull 2s ease-in-out infinite;
+    }
+
+    @keyframes fingerPull {
+      0%, 100% { transform: translate(0, 0); opacity: 0.92; }
+      55% { transform: translate(0, 14px); opacity: 1; }
+      85% { transform: translate(0, 14px); opacity: 0.2; }
+    }
+
+    /* ============================================================
+       3D COVERFLOW CAROUSELS
+       ============================================================ */
+    .carousel-stage {
+      position: relative;
+      width: 100%;
+      perspective: 1100px;
+      touch-action: pan-y;
+      user-select: none;
+      overflow: hidden;
+    }
+
+    .carousel-card {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transition:
+        transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.55s ease,
+        filter 0.55s ease;
+      will-change: transform, opacity;
+      cursor: pointer;
+    }
+
+    .carousel-card.no-transition {
+      transition: none !important;
+    }
+
+    .icon-float {
+      animation: iconFloat 3.4s ease-in-out infinite alternate;
+    }
+
+    @keyframes iconFloat {
+      0% { transform: translateY(0px); }
+      100% { transform: translateY(-4px); }
+    }
+
+    /* ============================================================
+       GRAND RECEPTION SPARKLES & FLUTES
+       ============================================================ */
+    .sparkle-twinkle {
+      animation: twinkle 2.8s ease-in-out infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.22; transform: scale(0.75); }
+      50% { opacity: 1; transform: scale(1.22); }
+    }
+
+    .flute-left {
+      transform-origin: bottom right;
+      animation: clinkLeft 3.4s ease-in-out infinite;
+    }
+
+    .flute-right {
+      transform-origin: bottom left;
+      animation: clinkRight 3.4s ease-in-out infinite;
+    }
+
+    @keyframes clinkLeft {
+      0%, 70%, 100% { transform: rotate(-4deg); }
+      82% { transform: rotate(3deg); }
+    }
+
+    @keyframes clinkRight {
+      0%, 70%, 100% { transform: rotate(4deg); }
+      82% { transform: rotate(-3deg); }
+    }
+
+    /* ============================================================
+       MAP ROUTE & PULSING PIN
+       ============================================================ */
+    .route-dash {
+      stroke-dasharray: 6 6;
+      animation: dashFlow 18s linear infinite;
+    }
+
+    @keyframes dashFlow {
+      to { stroke-dashoffset: -220; }
+    }
+
+    .pin-pulse {
+      animation: pinRing 2.2s ease-out infinite;
+      transform-origin: center;
+    }
+
+    @keyframes pinRing {
+      0% { transform: scale(0.7); opacity: 0.85; }
+      100% { transform: scale(2.1); opacity: 0; }
+    }
+
+    /* ============================================================
+       FLOATING EQUALIZER BUTTON & DESIGNER STUDIO GLOW
+       ============================================================ */
+    .eq-bar {
+      width: 2.5px;
+      border-radius: 99px;
+      background-color: var(--wine);
+      transition: height 0.2s ease;
+    }
+
+    .audio-playing .eq-bar-1 { animation: eqBounce 0.7s ease-in-out infinite alternate; }
+    .audio-playing .eq-bar-2 { animation: eqBounce 0.55s ease-in-out 0.15s infinite alternate; }
+    .audio-playing .eq-bar-3 { animation: eqBounce 0.8s ease-in-out 0.3s infinite alternate; }
+
+    @keyframes eqBounce {
+      0% { height: 5px; }
+      100% { height: 16px; }
+    }
+
+    .studio-ig-pill {
+      transition: transform 0.25s ease, box-shadow 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
+    }
+
+    .studio-ig-pill:hover,
+    .studio-ig-pill:focus-visible {
+      border-color: rgba(110, 31, 47, 0.55);
+      box-shadow: 0 8px 24px rgba(201, 162, 94, 0.34), 0 0 0 3px rgba(229, 201, 140, 0.24);
+      transform: translateY(-1px);
+    }
+
+    .studio-ig-pill:active {
+      transform: scale(0.96);
+    }
+
+    #toast-msg {
+      transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+  </style>
+</head>
+<body class="invite-locked paper-grain">
+
+  <!-- ============================================================
+       MAIN 430PX MOBILE-FIRST VIEWPORT STAGE
+       ============================================================ -->
+  <div id="app-stage">
+
+    <!-- GPU-Lightweight Falling Rose Petals & Confetti Canvas -->
+    <canvas id="petals-canvas" class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] h-full pointer-events-none z-40"></canvas>
+
+    <!-- Fixed 3D-Style Parallax Corner Roses -->
+    <div id="fixed-corner-roses" class="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] h-full pointer-events-none z-20 overflow-hidden">
+      <!-- Top-Left Soft Rose Cluster -->
+      <div id="edge-rose-tl" class="parallax-layer absolute -top-6 -left-6 w-28 h-28 opacity-90">
+        <svg viewBox="0 0 120 120" class="w-full h-full rose-breathe" aria-hidden="true">
+          <defs>
+            <radialGradient id="roseGrad1" cx="40%" cy="35%" r="65%">
+              <stop offset="0%" stop-color="#f9dcd7"/>
+              <stop offset="55%" stop-color="#d89aa0"/>
+              <stop offset="100%" stop-color="#8b3b4c"/>
+            </radialGradient>
+            <radialGradient id="roseCream" cx="40%" cy="35%" r="65%">
+              <stop offset="0%" stop-color="#fffaf6"/>
+              <stop offset="65%" stop-color="#f2d8d0"/>
+              <stop offset="100%" stop-color="#cf9b9c"/>
+            </radialGradient>
+          </defs>
+          <path d="M52,58 C78,42 96,52 104,68 C84,74 66,70 52,58 Z" fill="#899c80" opacity="0.65"/>
+          <path d="M36,68 C22,92 34,110 48,112 C56,96 52,80 36,68 Z" fill="#778c6f" opacity="0.58"/>
+          <g transform="translate(36,36)">
+            <circle cx="0" cy="0" r="24" fill="url(#roseGrad1)"/>
+            <path d="M-16,-6 C-12,-20 14,-20 16,-4 C18,12 -14,18 -16,-6 Z" fill="#ebc0be" opacity="0.68"/>
+            <path d="M-10,-2 C-8,-12 10,-12 10,0 C10,10 -8,11 -10,-2 Z" fill="#a85564" opacity="0.72"/>
+            <path d="M-5,-1 C-3,-7 6,-6 5,1 C4,6 -4,5 -5,-1 Z" fill="#752837" opacity="0.8"/>
+          </g>
+          <g transform="translate(72,22) scale(0.75)">
+            <circle cx="0" cy="0" r="20" fill="url(#roseCream)"/>
+            <path d="M-11,-3 C-8,-13 10,-12 11,0 C11,10 -10,10 -11,-3 Z" fill="#e5b8b4" opacity="0.6"/>
+            <circle cx="0" cy="0" r="5" fill="#c7838a" opacity="0.75"/>
+          </g>
+          <ellipse cx="22" cy="76" rx="8" ry="12" transform="rotate(-24 22 76)" fill="url(#roseGrad1)" opacity="0.88"/>
+        </svg>
+      </div>
+
+      <!-- Top-Right Soft Rose Cluster -->
+      <div id="edge-rose-tr" class="parallax-layer absolute -top-5 -right-7 w-28 h-28 opacity-90">
+        <svg viewBox="0 0 120 120" class="w-full h-full rose-breathe" style="transform: scaleX(-1);" aria-hidden="true">
+          <path d="M52,58 C78,42 96,52 104,68 C84,74 66,70 52,58 Z" fill="#899c80" opacity="0.62"/>
+          <path d="M36,68 C22,92 34,110 48,112 C56,96 52,80 36,68 Z" fill="#778c6f" opacity="0.55"/>
+          <g transform="translate(38,38)">
+            <circle cx="0" cy="0" r="22" fill="url(#roseCream)"/>
+            <path d="M-14,-4 C-10,-16 12,-16 14,-2 C15,10 -12,14 -14,-4 Z" fill="#e4b3b2" opacity="0.62"/>
+            <circle cx="0" cy="0" r="6" fill="#a85564" opacity="0.75"/>
+          </g>
+          <g transform="translate(74,24) scale(0.68)">
+            <circle cx="0" cy="0" r="20" fill="url(#roseGrad1)"/>
+            <circle cx="0" cy="0" r="7" fill="#7a2c3c" opacity="0.78"/>
+          </g>
+        </svg>
+      </div>
+
+      <!-- Bottom-Left Edge Rose -->
+      <div id="edge-rose-bl" class="parallax-layer absolute -bottom-8 -left-8 w-28 h-28 opacity-85">
+        <svg viewBox="0 0 120 120" class="w-full h-full" aria-hidden="true">
+          <path d="M56,64 C82,56 98,68 102,86 C82,88 66,80 56,64 Z" fill="#859a7c" opacity="0.55"/>
+          <g transform="translate(46,74)">
+            <circle cx="0" cy="0" r="25" fill="url(#roseGrad1)"/>
+            <path d="M-15,-5 C-10,-18 14,-18 15,-2 C16,12 -14,15 -15,-5 Z" fill="#f3cdc8" opacity="0.58"/>
+            <circle cx="0" cy="0" r="7" fill="#7a2c3c" opacity="0.78"/>
+          </g>
+          <g transform="translate(78,94) scale(0.65)">
+            <circle cx="0" cy="0" r="18" fill="url(#roseCream)"/>
+            <circle cx="0" cy="0" r="5" fill="#c9858c" opacity="0.7"/>
+          </g>
+        </svg>
+      </div>
+
+      <!-- Bottom-Right Edge Rose -->
+      <div id="edge-rose-br" class="parallax-layer absolute -bottom-7 -right-7 w-24 h-24 opacity-80">
+        <svg viewBox="0 0 120 120" class="w-full h-full" aria-hidden="true">
+          <path d="M52,48 C34,34 18,46 16,64 C32,68 46,62 52,48 Z" fill="#899c80" opacity="0.55"/>
+          <g transform="translate(74,76)">
+            <circle cx="0" cy="0" r="22" fill="url(#roseCream)"/>
+            <path d="M-13,-4 C-8,-15 12,-14 13,-1 C14,10 -12,12 -13,-4 Z" fill="#dfb0b0" opacity="0.65"/>
+            <circle cx="0" cy="0" r="6" fill="#9c4857" opacity="0.75"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         1. OPENING: PRELOADER & 3D WINE-VELVET BOOK OVERLAY
+         ============================================================ -->
+    <div id="book-overlay" role="dialog" aria-label="Wedding Invitation Book Cover">
+      <!-- Preloader -->
+      <div id="preloader">
+        <div class="relative flex items-center justify-center">
+          <div class="loader-ring"></div>
+          <svg class="w-11 h-11 absolute text-gold" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M32 10 C34 12 36 14 35 17 C33 19 31 19 29 17 C28 14 30 12 32 10 Z" />
+            <path d="M24 20 C27 17 37 17 40 20" />
+            <path d="M22 24 C15 24 12 31 15 37 C18 42 23 40 24 36" />
+            <path d="M42 24 C49 24 52 31 49 37 C46 42 41 40 40 36" />
+            <path d="M26 24 C25 32 27 40 32 43 C35 45 36 49 33 52 C30 54 26 52 27 49" />
+            <path d="M38 24 C39 30 38 35 35 39" />
+            <circle cx="28" cy="28" r="1" fill="currentColor" />
+            <circle cx="36" cy="28" r="1" fill="currentColor" />
+            <path d="M32 22 L32 25" />
+          </svg>
+        </div>
+        <p class="mt-5 text-[10px] tracking-[0.28em] uppercase text-wine/80 font-medium">Shubh Vivaah</p>
+        <p class="mt-1 text-[11px] font-serif italic text-wine/60">Preparing your invitation…</p>
+      </div>
+
+      <!-- Blurred Parallax Background Roses -->
+      <div id="cover-bg-roses" class="parallax-layer absolute inset-0 pointer-events-none">
+        <svg class="absolute -top-10 -left-8 w-44 h-44 opacity-55 blur-[2px]" viewBox="0 0 120 120" aria-hidden="true">
+          <circle cx="52" cy="54" r="36" fill="#dfb3b4"/>
+          <circle cx="54" cy="52" r="22" fill="#c7838a"/>
+          <circle cx="88" cy="30" r="24" fill="#f5e2dc"/>
+        </svg>
+        <svg class="absolute top-16 -right-12 w-40 h-40 opacity-50 blur-[3px]" viewBox="0 0 120 120" aria-hidden="true">
+          <circle cx="60" cy="60" r="34" fill="#d89aa0"/>
+          <circle cx="48" cy="48" r="18" fill="#f7e8e3"/>
+        </svg>
+        <svg class="absolute -bottom-12 -left-10 w-48 h-48 opacity-60 blur-[2px]" viewBox="0 0 120 120" aria-hidden="true">
+          <circle cx="54" cy="62" r="38" fill="#d18d94"/>
+          <circle cx="60" cy="60" r="20" fill="#9c4353"/>
+        </svg>
+        <svg class="absolute bottom-20 -right-10 w-36 h-36 opacity-50 blur-[3px]" viewBox="0 0 120 120" aria-hidden="true">
+          <circle cx="60" cy="60" r="30" fill="#f6e4de"/>
+          <circle cx="62" cy="58" r="15" fill="#d89da2"/>
+        </svg>
+      </div>
+
+      <!-- Subtle Auspicious Top Blessing -->
+      <p class="relative z-10 mb-6 text-[10px] tracking-[0.26em] uppercase text-wine/75 font-medium">
+        ॥ श्री गणेशाय नमः ॥
+      </p>
+
+      <!-- 3D Wine-Velvet Book -->
+      <div id="wedding-book" class="book-scene" tabindex="0" role="button" aria-label="Tap the book to open wedding invitation">
+        <div class="book-body">
+          <div class="book-pages-edge"></div>
+
+          <!-- Inner First Page glimpsed while swinging open -->
+          <div class="book-inner-page">
+            <div class="w-full h-full border border-gold/45 rounded-lg flex flex-col items-center justify-center px-3">
+              <span class="text-[9px] tracking-[0.24em] uppercase text-goldDark mb-2">Together Forever</span>
+              <span class="font-serif text-2xl text-wine">Aarav</span>
+              <span class="font-serif italic text-lg text-gold my-0.5">&amp;</span>
+              <span class="font-serif text-2xl text-wine">Ananya</span>
+              <span class="mt-3 text-[9px] tracking-[0.2em] uppercase text-wine/65">12 Feb 2027</span>
+            </div>
+          </div>
+
+          <!-- Front 3D Wine-Velvet Cover -->
+          <div class="book-front-cover">
+            <div class="book-cover-backface"></div>
+
+            <!-- Double Champagne-Gold Ornate Corner Borders -->
+            <div class="absolute inset-[13px] left-[22px] border border-goldLight/65 rounded-[3px] pointer-events-none">
+              <div class="absolute inset-[4px] border border-goldLight/32 rounded-[2px]"></div>
+
+              <svg class="absolute -top-[1px] -left-[1px] w-7 h-7 text-goldLight/90" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.2">
+                <path d="M2 16 L2 2 L16 2 M6 12 C6 8 8 6 12 6 M2 2 L9 9"/>
+              </svg>
+              <svg class="absolute -top-[1px] -right-[1px] w-7 h-7 text-goldLight/90 scale-x-[-1]" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.2">
+                <path d="M2 16 L2 2 L16 2 M6 12 C6 8 8 6 12 6 M2 2 L9 9"/>
+              </svg>
+              <svg class="absolute -bottom-[1px] -left-[1px] w-7 h-7 text-goldLight/90 scale-y-[-1]" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.2">
+                <path d="M2 16 L2 2 L16 2 M6 12 C6 8 8 6 12 6 M2 2 L9 9"/>
+              </svg>
+              <svg class="absolute -bottom-[1px] -right-[1px] w-7 h-7 text-goldLight/90 scale-[-1]" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.2">
+                <path d="M2 16 L2 2 L16 2 M6 12 C6 8 8 6 12 6 M2 2 L9 9"/>
+              </svg>
+            </div>
+
+            <!-- Delicate Floral Corner Accents -->
+            <svg class="absolute -top-2 -left-1 w-14 h-14 pointer-events-none opacity-95" viewBox="0 0 80 80" aria-hidden="true">
+              <circle cx="24" cy="24" r="13" fill="#f3d4cf"/>
+              <circle cx="24" cy="24" r="8" fill="#c77b85"/>
+              <circle cx="24" cy="24" r="4" fill="#8b3445"/>
+              <circle cx="42" cy="14" r="7" fill="#fbece8"/>
+            </svg>
+            <svg class="absolute -bottom-2 -right-1 w-16 h-16 pointer-events-none opacity-95" viewBox="0 0 80 80" aria-hidden="true">
+              <circle cx="56" cy="56" r="14" fill="#f3d4cf"/>
+              <circle cx="56" cy="56" r="8.5" fill="#c77b85"/>
+              <circle cx="56" cy="56" r="4" fill="#8b3445"/>
+              <circle cx="36" cy="64" r="8" fill="#fbece8"/>
+              <circle cx="66" cy="38" r="6" fill="#e5b0b2"/>
+            </svg>
+
+            <!-- Cover Emblem & Typography -->
+            <div class="relative z-10 h-full pl-3 flex flex-col items-center justify-center text-center px-5">
+              <div class="w-[82px] h-[82px] rounded-full border border-goldLight/60 flex items-center justify-center bg-wineDark/30 shadow-inner mb-6">
+                <div class="w-[70px] h-[70px] rounded-full border border-goldLight/30 flex items-center justify-center">
+                  <svg class="w-11 h-11 text-goldLight" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M32 10 C34 12 36 14 35 17 C33 19 31 19 29 17 C28 14 30 12 32 10 Z" />
+                    <path d="M24 20 C27 17 37 17 40 20" />
+                    <path d="M22 24 C15 24 12 31 15 37 C18 42 23 40 24 36" />
+                    <path d="M42 24 C49 24 52 31 49 37 C46 42 41 40 40 36" />
+                    <path d="M26 24 C25 32 27 40 32 43 C35 45 36 49 33 52 C30 54 26 52 27 49" />
+                    <path d="M38 24 C39 30 38 35 35 39" />
+                    <circle cx="28" cy="28" r="1.1" fill="currentColor" />
+                    <circle cx="36" cy="28" r="1.1" fill="currentColor" />
+                    <path d="M32 22 L32 25" />
+                  </svg>
+                </div>
+              </div>
+
+              <h1 class="font-serif italic text-[21px] tracking-[0.14em] text-goldLight leading-snug drop-shadow-sm">
+                SHUBH VIVAAH
+              </h1>
+
+              <div class="w-16 h-[1px] bg-gradient-to-r from-transparent via-goldLight/65 to-transparent my-2.5"></div>
+
+              <p class="text-[8.5px] tracking-[0.28em] uppercase text-goldLight/85 font-medium">
+                A WEDDING INVITATION
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tap Cue -->
+      <button id="open-book-btn" type="button" class="relative z-10 mt-10 flex flex-col items-center gap-3 focus:outline-none group">
+        <span class="w-11 h-11 rounded-full border border-wine/45 flex items-center justify-center tap-pulse bg-ivory/45 backdrop-blur-[2px]">
+          <span class="w-3.5 h-3.5 rounded-full bg-wine group-hover:scale-110 transition-transform"></span>
+        </span>
+        <span class="text-[10px] tracking-[0.26em] uppercase text-wine font-semibold">
+          TAP THE BOOK TO OPEN
+        </span>
+      </button>
+    </div>
+
+    <!-- ============================================================
+         CONTINUOUS SEAMLESS INVITATION PAGE
+         ============================================================ -->
+    <main id="invite-content" class="relative z-10">
+
+      <!-- ==========================================================
+           2. FIRST PAGE (100SVH, CENTERED, NEVER CUT)
+           ========================================================== -->
+      <section id="hero-section" class="relative min-h-[100svh] flex flex-col items-center justify-center px-5 pt-7 pb-6 overflow-hidden">
+
+        <!-- Hanging Marigold Garlands at Top (Swing subtly on scroll) -->
+        <div class="absolute top-0 left-0 right-0 flex justify-between px-2 pointer-events-none z-20">
+          <div id="garland-left" class="garland-wrap">
+            <svg class="w-16 h-32 garland-sway" viewBox="0 0 70 140" aria-hidden="true">
+              <line x1="20" y1="0" x2="20" y2="96" stroke="#c9a25e" stroke-width="1" opacity="0.72"/>
+              <line x1="44" y1="0" x2="44" y2="72" stroke="#c9a25e" stroke-width="1" opacity="0.65"/>
+              <circle cx="20" cy="14" r="3" fill="#fffaf3"/>
+              <circle cx="20" cy="28" r="6" fill="#f3b642"/>
+              <circle cx="20" cy="28" r="3" fill="#e58a24"/>
+              <circle cx="20" cy="42" r="2.8" fill="#fffaf3"/>
+              <circle cx="20" cy="54" r="5.5" fill="#f6c760"/>
+              <circle cx="20" cy="68" r="3" fill="#fffaf3"/>
+              <circle cx="20" cy="82" r="6" fill="#eb9f36"/>
+              <circle cx="20" cy="96" r="4" fill="#8b2b3d"/>
+              <circle cx="44" cy="18" r="5" fill="#f5c052"/>
+              <circle cx="44" cy="32" r="2.6" fill="#fffaf3"/>
+              <circle cx="44" cy="46" r="5.5" fill="#e99a32"/>
+              <circle cx="44" cy="60" r="2.6" fill="#fffaf3"/>
+              <circle cx="44" cy="72" r="3.5" fill="#c9a25e"/>
+            </svg>
+          </div>
+          <div id="garland-right" class="garland-wrap">
+            <svg class="w-16 h-32 garland-sway-delay" viewBox="0 0 70 140" aria-hidden="true">
+              <line x1="26" y1="0" x2="26" y2="74" stroke="#c9a25e" stroke-width="1" opacity="0.65"/>
+              <line x1="50" y1="0" x2="50" y2="100" stroke="#c9a25e" stroke-width="1" opacity="0.72"/>
+              <circle cx="26" cy="16" r="5" fill="#f5c052"/>
+              <circle cx="26" cy="30" r="2.6" fill="#fffaf3"/>
+              <circle cx="26" cy="44" r="5.5" fill="#e99a32"/>
+              <circle cx="26" cy="58" r="2.6" fill="#fffaf3"/>
+              <circle cx="26" cy="72" r="3.5" fill="#c9a25e"/>
+              <circle cx="50" cy="14" r="3" fill="#fffaf3"/>
+              <circle cx="50" cy="28" r="6" fill="#f3b642"/>
+              <circle cx="50" cy="42" r="2.8" fill="#fffaf3"/>
+              <circle cx="50" cy="56" r="5.5" fill="#f6c760"/>
+              <circle cx="50" cy="70" r="3" fill="#fffaf3"/>
+              <circle cx="50" cy="84" r="6" fill="#eb9f36"/>
+              <circle cx="50" cy="100" r="4" fill="#8b2b3d"/>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Thin Champagne-Gold Arched Frame -->
+        <div class="hero-arch w-full max-w-[356px] min-h-[84svh] max-h-[700px] border border-gold/65 p-[5px] shadow-[0_18px_50px_rgba(110,31,47,0.08)] bg-ivory/75">
+          <div class="hero-arch w-full h-full min-h-[calc(84svh-12px)] max-h-[688px] border border-gold/30 relative flex flex-col items-center justify-between py-8 px-5 text-center">
+
+            <!-- Soft Slowly Zooming Blurred Romantic Backdrop -->
+            <div class="absolute inset-0 overflow-hidden pointer-events-none">
+              <svg class="w-full h-full object-cover slow-zoom-bg opacity-35" viewBox="0 0 360 640" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                <defs>
+                  <linearGradient id="palaceSky" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#e8d5cc"/>
+                    <stop offset="48%" stop-color="#f8eee8"/>
+                    <stop offset="100%" stop-color="#ede0d6"/>
+                  </linearGradient>
+                  <filter id="softBlur" x="-10%" y="-10%" width="120%" height="120%">
+                    <feGaussianBlur stdDeviation="5.5"/>
+                  </filter>
+                </defs>
+                <rect width="360" height="640" fill="url(#palaceSky)"/>
+                <g filter="url(#softBlur)">
+                  <ellipse cx="95" cy="40" rx="115" ry="62" fill="#5b4e47" opacity="0.44"/>
+                  <ellipse cx="265" cy="30" rx="110" ry="56" fill="#6d5d54" opacity="0.38"/>
+                  <ellipse cx="180" cy="18" rx="95" ry="44" fill="#473c37" opacity="0.4"/>
+                  <circle cx="180" cy="255" r="120" fill="#fff5e4" opacity="0.72"/>
+                  <path d="M50 430 L50 360 Q180 300 310 360 L310 430 Z" fill="#d9c3b6" opacity="0.5"/>
+                  <path d="M140 340 Q180 280 220 340 Z" fill="#ccb1a2" opacity="0.45"/>
+                  <g fill="#5b4749" opacity="0.42">
+                    <circle cx="152" cy="368" r="22"/>
+                    <path d="M122 410 C125 390 176 390 180 412 L188 595 L114 595 Z"/>
+                    <circle cx="204" cy="382" r="20"/>
+                    <path d="M174 420 C178 400 228 400 236 425 L264 595 L164 595 Z"/>
+                  </g>
+                  <circle cx="80" cy="510" r="44" fill="#e5b8b4" opacity="0.35"/>
+                  <circle cx="290" cy="490" r="52" fill="#e8c2be" opacity="0.32"/>
+                </g>
+              </svg>
+              <div class="absolute inset-0 bg-gradient-to-b from-ivory/55 via-ivory/75 to-ivory/82"></div>
+            </div>
+
+            <!-- Top Ganesh ji Gold Medallion -->
+            <div class="relative z-10 flex flex-col items-center">
+              <div class="w-14 h-14 rounded-full border border-gold/65 bg-ivory/85 flex items-center justify-center shadow-sm">
+                <svg class="w-8 h-8 text-goldDark" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M32 10 C34 12 36 14 35 17 C33 19 31 19 29 17 C28 14 30 12 32 10 Z" />
+                  <path d="M24 20 C27 17 37 17 40 20" />
+                  <path d="M22 24 C15 24 12 31 15 37 C18 42 23 40 24 36" />
+                  <path d="M42 24 C49 24 52 31 49 37 C46 42 41 40 40 36" />
+                  <path d="M26 24 C25 32 27 40 32 43 C35 45 36 49 33 52 C30 54 26 52 27 49" />
+                  <path d="M38 24 C39 30 38 35 35 39" />
+                  <circle cx="28" cy="28" r="1.1" fill="currentColor" />
+                  <circle cx="36" cy="28" r="1.1" fill="currentColor" />
+                </svg>
+              </div>
+              <p class="mt-4 text-[9.5px] tracking-[0.26em] uppercase text-goldDark font-semibold">
+                TOGETHER WITH THEIR FAMILIES
+              </p>
+            </div>
+
+            <!-- Couple & Parents Names -->
+            <div class="relative z-10 my-auto py-3">
+              <h2 id="groom-name" class="font-serif text-[42px] leading-tight text-wine font-medium tracking-wide" data-animate-name="Aarav">
+                Aarav
+              </h2>
+              <p class="mt-1 text-[9px] tracking-[0.22em] uppercase text-ink/70 font-semibold">SON OF</p>
+              <p class="mt-0.5 text-[11.5px] text-ink/85 font-medium">
+                Mr. Rajesh Sharma &amp; Mrs. Sunita Sharma
+              </p>
+
+              <!-- Ornate Gold Ampersand -->
+              <div class="my-3 flex items-center justify-center gap-3">
+                <span class="w-8 h-[1px] bg-gradient-to-r from-transparent to-gold/65"></span>
+                <span class="font-serif italic text-[30px] text-gold leading-none">&amp;</span>
+                <span class="w-8 h-[1px] bg-gradient-to-l from-transparent to-gold/65"></span>
+              </div>
+
+              <h2 id="bride-name" class="font-serif text-[42px] leading-tight text-wine font-medium tracking-wide" data-animate-name="Ananya">
+                Ananya
+              </h2>
+              <p class="mt-1 text-[9px] tracking-[0.22em] uppercase text-ink/70 font-semibold">DAUGHTER OF</p>
+              <p class="mt-0.5 text-[11.5px] text-ink/85 font-medium">
+                Mr. Vikram Mehta &amp; Mrs. Kavita Mehta
+              </p>
+
+              <p class="mt-6 font-serif italic text-[15.5px] leading-relaxed text-ink/90 max-w-[260px] mx-auto">
+                request the pleasure of your company at their wedding
+              </p>
+            </div>
+
+            <!-- Animated Double Chevron Scroll Indicator -->
+            <a href="#save-the-date" class="relative z-10 flex flex-col items-center gap-1 pt-2 text-wine/75 hover:text-wine transition-colors">
+              <span class="text-[9px] tracking-[0.26em] uppercase font-semibold">SCROLL</span>
+              <svg class="w-4 h-4 bounce-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="6 7 12 13 18 7"/>
+                <polyline points="6 13 12 19 18 13"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================================
+           3. SAVE THE DATE — PULL TO REVEAL SCROLL
+           ========================================================== -->
+      <section id="save-the-date" class="relative py-16 px-5 text-center overflow-hidden">
+        <div class="pointer-events-none select-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap font-serif italic text-[68px] text-wine/[0.04] tracking-wide">
+          Save the Date
+        </div>
+
+        <div class="reveal-item relative z-10">
+          <p class="text-[10px] tracking-[0.28em] uppercase text-goldDark font-semibold">SAVE THE DATE</p>
+          <h2 class="mt-1.5 font-serif text-[32px] text-wine font-medium">Pull to Reveal</h2>
+        </div>
+
+        <!-- Royal Unrolling Scroll -->
+        <div class="reveal-item relative z-10 mt-8 max-w-[320px] mx-auto flex flex-col items-center">
+          <!-- Top Gold Rod -->
+          <div class="gold-rod w-full z-20">
+            <span class="gold-knob left"></span>
+            <span class="gold-knob right"></span>
+          </div>
+
+          <!-- Parchment Scroll Body -->
+          <div id="scroll-parchment" class="scroll-parchment relative w-[86%] border-x border-gold/45" style="height: 0px;">
+            <div class="w-full h-[292px] px-4 py-5 flex flex-col items-center justify-center relative">
+              <!-- Double Gold Frame -->
+              <div class="absolute inset-2.5 border border-gold/55 pointer-events-none">
+                <div class="absolute inset-[3px] border border-gold/25"></div>
+              </div>
+
+              <!-- Rose Corners -->
+              <svg class="absolute top-1.5 left-1.5 w-11 h-11 opacity-85 pointer-events-none" viewBox="0 0 60 60" aria-hidden="true">
+                <circle cx="20" cy="20" r="11" fill="#f3d6d1"/>
+                <circle cx="20" cy="20" r="6" fill="#ca848c"/>
+                <circle cx="20" cy="20" r="2.8" fill="#8b3445"/>
+              </svg>
+              <svg class="absolute bottom-1.5 right-1.5 w-12 h-12 opacity-85 pointer-events-none" viewBox="0 0 60 60" aria-hidden="true">
+                <circle cx="40" cy="40" r="12" fill="#f3d6d1"/>
+                <circle cx="40" cy="40" r="7" fill="#c2747f"/>
+                <circle cx="40" cy="40" r="3" fill="#7c2838"/>
+              </svg>
+
+              <!-- Ganesh ji Emblem -->
+              <svg class="w-8 h-8 text-goldDark mb-2" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M32 10 C34 12 36 14 35 17 C33 19 31 19 29 17 C28 14 30 12 32 10 Z" />
+                <path d="M24 20 C27 17 37 17 40 20" />
+                <path d="M22 24 C15 24 12 31 15 37 C18 42 23 40 24 36" />
+                <path d="M42 24 C49 24 52 31 49 37 C46 42 41 40 40 36" />
+                <path d="M26 24 C25 32 27 40 32 43 C35 45 36 49 33 52 C30 54 26 52 27 49" />
+                <path d="M38 24 C39 30 38 35 35 39" />
+              </svg>
+
+              <p class="text-[10px] tracking-[0.28em] uppercase text-goldDark font-semibold">FRIDAY</p>
+              <p class="font-serif text-[58px] leading-none text-wine font-semibold mt-1">12</p>
+              <p class="font-serif italic text-[24px] text-ink mt-1">February</p>
+              <p class="text-[12px] tracking-[0.34em] text-goldDark font-medium mt-1">2027</p>
+
+              <div class="w-14 h-[1px] bg-gold/45 my-3"></div>
+              <p class="text-[10.5px] text-ink/80 font-medium">
+                Pheras at 10:30 pm &middot; Raj Vilas Palace
+              </p>
+            </div>
+          </div>
+
+          <!-- Bottom Gold Rod -->
+          <div id="scroll-bottom-rod" class="gold-rod w-full z-20 -mt-[4px]">
+            <span class="gold-knob left"></span>
+            <span class="gold-knob right"></span>
+          </div>
+
+          <!-- Realistic Draggable / Tappable Wine & Gold Tassel -->
+          <div id="tassel-handle" class="tassel-handle relative z-30 flex flex-col items-center pt-0 pb-4 px-8" role="button" tabindex="0" aria-label="Drag the tassel down or tap to reveal wedding date">
+            <div id="tassel-visual" class="tassel-sway flex flex-col items-center">
+              <div class="w-[2px] h-7 bg-gradient-to-b from-goldDark to-gold"></div>
+              <div class="w-4 h-4 rounded-full bg-gradient-to-br from-[#9e3147] via-wine to-wineDark border border-goldLight/60 shadow-md -mt-0.5"></div>
+              <div class="w-3 h-1.5 rounded-full bg-gold -mt-0.5"></div>
+              <svg class="w-7 h-12 -mt-0.5 drop-shadow-sm" viewBox="0 0 28 48" aria-hidden="true">
+                <line x1="14" y1="0" x2="6" y2="44" stroke="#6e1f2f" stroke-width="1.6" stroke-linecap="round"/>
+                <line x1="14" y1="0" x2="9.5" y2="46" stroke="#8b2b3e" stroke-width="1.6" stroke-linecap="round"/>
+                <line x1="14" y1="0" x2="12.5" y2="47" stroke="#6e1f2f" stroke-width="1.6" stroke-linecap="round"/>
+                <line x1="14" y1="0" x2="15.5" y2="47" stroke="#c9a25e" stroke-width="1.2" stroke-linecap="round"/>
+                <line x1="14" y1="0" x2="18.5" y2="46" stroke="#8b2b3e" stroke-width="1.6" stroke-linecap="round"/>
+                <line x1="14" y1="0" x2="22" y2="44" stroke="#6e1f2f" stroke-width="1.6" stroke-linecap="round"/>
+              </svg>
+            </div>
+
+            <!-- Animated Pointer Hand Hint -->
+            <div id="finger-hint" class="finger-cue absolute top-11 right-2 pointer-events-none">
+              <svg class="w-7 h-7 text-wine drop-shadow" viewBox="0 0 24 24" fill="#fffaf6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M10 11V4.5a1.5 1.5 0 0 1 3 0V11"/>
+                <path d="M13 10.5V9a1.5 1.5 0 0 1 3 0v2"/>
+                <path d="M16 11V10a1.5 1.5 0 0 1 3 0v5a6 6 0 0 1-6 6h-2a6 6 0 0 1-5-2.7L3.7 15a1.5 1.5 0 0 1 2.2-2l2.1 1.7V11"/>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Status Pill -->
+          <div id="scroll-status-pill" class="mt-1 px-4 py-1.5 rounded-full bg-white/85 border border-gold/30 shadow-sm text-[11px] font-medium text-ink/85 transition-all">
+            Drag the tassel down or tap
+          </div>
+
+          <!-- Live Countdown + Add to Calendar -->
+          <div id="countdown-panel" class="mt-6 w-full">
+            <div class="flex items-baseline justify-center gap-2.5 text-wine font-serif whitespace-nowrap">
+              <div class="flex items-baseline gap-1">
+                <span id="cd-days" class="text-[25px] font-semibold">00</span>
+                <span class="font-sans text-[8.5px] tracking-[0.14em] uppercase text-ink/65">DAYS</span>
+              </div>
+              <span class="text-gold text-sm">&middot;</span>
+              <div class="flex items-baseline gap-1">
+                <span id="cd-hours" class="text-[25px] font-semibold">00</span>
+                <span class="font-sans text-[8.5px] tracking-[0.14em] uppercase text-ink/65">HRS</span>
+              </div>
+              <span class="text-gold text-sm">&middot;</span>
+              <div class="flex items-baseline gap-1">
+                <span id="cd-mins" class="text-[25px] font-semibold">00</span>
+                <span class="font-sans text-[8.5px] tracking-[0.14em] uppercase text-ink/65">MIN</span>
+              </div>
+              <span class="text-gold text-sm">&middot;</span>
+              <div class="flex items-baseline gap-1">
+                <span id="cd-secs" class="text-[25px] font-semibold">00</span>
+                <span class="font-sans text-[8.5px] tracking-[0.14em] uppercase text-ink/65">SEC</span>
+              </div>
+            </div>
+
+            <button id="add-calendar-btn" type="button" class="mt-5 inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-wine/35 bg-white/85 hover:bg-wine hover:text-ivory text-wine text-[10.5px] tracking-[0.18em] uppercase font-semibold transition-all shadow-sm active:scale-95">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="3" y="4" width="18" height="18" rx="3"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+              Add to Calendar
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================================
+           4. WEDDING FESTIVITIES — SWIPEABLE 3D CARD CAROUSEL
+           ========================================================== -->
+      <section id="festivities" class="relative py-14 text-center">
+        <div class="reveal-item px-5">
+          <p class="text-[10px] tracking-[0.28em] uppercase text-goldDark font-semibold">Celebrations</p>
+          <h2 class="mt-1.5 font-serif text-[32px] text-wine font-medium">Wedding Festivities</h2>
+          <p class="mt-1 text-[11px] text-ink/65">Swipe to explore each ceremony &amp; dress code</p>
+        </div>
+
+        <div id="festivities-stage" class="carousel-stage h-[418px] mt-5"></div>
+
+        <div class="mt-3 flex items-center justify-center gap-5 px-5">
+          <button id="fest-prev" type="button" aria-label="Previous ceremony" class="w-9 h-9 rounded-full border border-gold/45 bg-white/85 text-wine flex items-center justify-center shadow-sm active:scale-90 transition">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <div id="fest-dots" class="flex items-center gap-2"></div>
+          <button id="fest-next" type="button" aria-label="Next ceremony" class="w-9 h-9 rounded-full border border-gold/45 bg-white/85 text-wine flex items-center justify-center shadow-sm active:scale-90 transition">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- ==========================================================
+           5. OUR STORY — SWIPEABLE 3D PHOTO CAROUSEL
+           ========================================================== -->
+      <section id="our-story" class="relative py-14 text-center">
+        <div class="reveal-item px-5">
+          <p class="text-[10px] tracking-[0.28em] uppercase text-goldDark font-semibold">Memories</p>
+          <h2 class="mt-1.5 font-serif text-[32px] text-wine font-medium">Our Story</h2>
+          <p class="mt-1 text-[11px] text-ink/65">Moments that led us to forever</p>
+        </div>
+
+        <div id="story-stage" class="carousel-stage h-[395px] mt-5"></div>
+
+        <div class="mt-3 flex items-center justify-center gap-5 px-5">
+          <button id="story-prev" type="button" aria-label="Previous memory" class="w-9 h-9 rounded-full border border-gold/45 bg-white/85 text-wine flex items-center justify-center shadow-sm active:scale-90 transition">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <div id="story-dots" class="flex items-center gap-2"></div>
+          <button id="story-next" type="button" aria-label="Next memory" class="w-9 h-9 rounded-full border border-gold/45 bg-white/85 text-wine flex items-center justify-center shadow-sm active:scale-90 transition">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+        </div>
+      </section>
+
+      <!-- ==========================================================
+           6. GRAND RECEPTION — DEEP WINE LUXURY CARD
+           ========================================================== -->
+      <section id="reception" class="relative py-12 px-6">
+        <div class="reveal-item relative rounded-[26px] overflow-hidden shadow-[0_24px_48px_rgba(74,17,29,0.28)]"
+             style="background: radial-gradient(circle at 25% 20%, #86293d 0%, #6e1f2f 48%, #47111c 100%);">
+
+          <!-- Fine Double Gold Inner Border -->
+          <div class="absolute inset-3.5 border border-goldLight/45 rounded-[18px] pointer-events-none">
+            <div class="absolute inset-[4px] border border-goldLight/20 rounded-[14px]"></div>
+          </div>
+
+          <!-- Blooming Blush Roses in Two Corners -->
+          <svg class="absolute -top-3 -left-3 w-24 h-24 opacity-92 pointer-events-none" viewBox="0 0 100 100" aria-hidden="true">
+            <path d="M40,48 C62,40 76,50 82,64 C64,68 50,62 40,48 Z" fill="#6f8769" opacity="0.55"/>
+            <circle cx="28" cy="28" r="18" fill="#ebc6c2"/>
+            <circle cx="28" cy="28" r="11" fill="#bd6d79"/>
+            <circle cx="28" cy="28" r="5" fill="#7c2839"/>
+            <circle cx="52" cy="18" r="10" fill="#f9ece7" opacity="0.9"/>
+          </svg>
+          <svg class="absolute -bottom-3 -right-3 w-24 h-24 opacity-92 pointer-events-none" viewBox="0 0 100 100" aria-hidden="true">
+            <path d="M58,52 C36,60 22,50 18,36 C36,32 50,38 58,52 Z" fill="#6f8769" opacity="0.55"/>
+            <circle cx="72" cy="72" r="18" fill="#ebc6c2"/>
+            <circle cx="72" cy="72" r="11" fill="#bd6d79"/>
+            <circle cx="72" cy="72" r="5" fill="#7c2839"/>
+            <circle cx="48" cy="82" r="10" fill="#f9ece7" opacity="0.9"/>
+          </svg>
+
+          <!-- Twinkling Gold Sparkles -->
+          <svg class="absolute top-12 right-10 w-4 h-4 text-goldLight sparkle-twinkle pointer-events-none" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 2 L14 10 L22 12 L14 14 L12 22 L10 14 L2 12 L10 10 Z"/>
+          </svg>
+          <svg class="absolute bottom-20 left-9 w-3 h-3 text-goldLight sparkle-twinkle pointer-events-none" style="animation-delay: 1.2s;" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 2 L14 10 L22 12 L14 14 L12 22 L10 14 L2 12 L10 10 Z"/>
+          </svg>
+          <svg class="absolute top-1/2 right-7 w-2.5 h-2.5 text-goldLight sparkle-twinkle pointer-events-none" style="animation-delay: 0.6s;" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M12 2 L14 10 L22 12 L14 14 L12 22 L10 14 L2 12 L10 10 Z"/>
+          </svg>
+
+          <div class="relative z-10 py-11 px-7 text-center text-ivory">
+            <p class="text-[9.5px] tracking-[0.28em] uppercase text-goldLight/85 font-medium">
+              YOU ARE INVITED TO THE
+            </p>
+            <h2 class="mt-2 font-serif text-[34px] text-goldLight font-medium leading-tight">
+              Grand Reception
+            </h2>
+
+            <!-- Champagne Flutes -->
+            <div class="my-6 flex justify-center">
+              <svg class="w-16 h-16" viewBox="0 0 72 72" fill="none" aria-hidden="true">
+                <path class="sparkle-twinkle" d="M36 8 L37.3 12.7 L42 14 L37.3 15.3 L36 20 L34.7 15.3 L30 14 L34.7 12.7 Z" fill="#f3d893"/>
+                <g class="flute-left">
+                  <path d="M23 22 L31 22 L29.5 41 C29.2 44.5 24.8 44.5 24.5 41 Z" fill="#f1cf7a" fill-opacity="0.3" stroke="#e5c98c" stroke-width="1.4"/>
+                  <path d="M24.2 31 L29.8 31 L29.3 40.5 C29 43.2 25 43.2 24.7 40.5 Z" fill="#e9c05f"/>
+                  <line x1="27" y1="43.5" x2="27" y2="57" stroke="#e5c98c" stroke-width="1.4"/>
+                  <line x1="22" y1="57" x2="32" y2="57" stroke="#e5c98c" stroke-width="1.5" stroke-linecap="round"/>
+                </g>
+                <g class="flute-right">
+                  <path d="M41 22 L49 22 L47.5 41 C47.2 44.5 42.8 44.5 42.5 41 Z" fill="#f1cf7a" fill-opacity="0.3" stroke="#e5c98c" stroke-width="1.4"/>
+                  <path d="M42.2 31 L47.8 31 L47.3 40.5 C47 43.2 43 43.2 42.7 40.5 Z" fill="#e9c05f"/>
+                  <line x1="45" y1="43.5" x2="45" y2="57" stroke="#e5c98c" stroke-width="1.4"/>
+                  <line x1="40" y1="57" x2="50" y2="57" stroke="#e5c98c" stroke-width="1.5" stroke-linecap="round"/>
+                </g>
+              </svg>
+            </div>
+
+            <p class="font-serif text-[22px] text-ivory leading-snug">
+              Saturday, 13 February
+            </p>
+            <p class="font-serif text-[22px] text-goldLight/95 leading-snug">
+              2027
+            </p>
+
+            <p class="mt-4 text-[12px] text-ivory/85 font-normal">
+              8:00 pm onwards &middot; Dinner &amp; dance
+            </p>
+            <p class="mt-1 text-[11.5px] text-goldLight/85 font-medium">
+              Sheesh Mahal, Raj Vilas Palace
+            </p>
+
+            <div class="mt-6 inline-block px-5 py-2 rounded-full border border-goldLight/55 bg-wineDark/40">
+              <span class="text-[9.5px] tracking-[0.2em] uppercase text-goldLight font-semibold">
+                DRESS CODE: BLACK TIE &amp; SAREES
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================================
+           7. LOCATION — HOW TO REACH
+           ========================================================== -->
+      <section id="location" class="relative py-14 px-6 text-center">
+        <div class="reveal-item">
+          <p class="text-[10px] tracking-[0.28em] uppercase text-goldDark font-semibold">LOCATION</p>
+          <h2 class="mt-1.5 font-serif text-[32px] text-wine font-medium">How to Reach</h2>
+        </div>
+
+        <!-- Stylized Jaipur Map Card -->
+        <a id="map-card-link"
+           href="https://www.google.com/maps/search/?api=1&query=Raj+Vilas+Palace+Amer+Road+Near+Jal+Mahal+Jaipur+302002"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="reveal-item block mt-6 rounded-[22px] overflow-hidden border border-gold/40 shadow-[0_14px_34px_rgba(110,31,47,0.1)] bg-[#f7efe6] relative group">
+
+          <svg class="w-full h-[202px] block" viewBox="0 0 360 202" preserveAspectRatio="xMidYMid slice" aria-label="Stylized map to Raj Vilas Palace, Jaipur">
+            <rect width="360" height="202" fill="#f6efe6"/>
+            <path d="M0 0 L135 0 C115 35 65 44 0 58 Z" fill="#e8dfd1"/>
+            <path d="M235 0 L360 0 L360 45 C310 38 265 25 235 0 Z" fill="#eae0d2"/>
+            <!-- Roads -->
+            <path d="M55 0 Q82 95 140 202" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round"/>
+            <path d="M0 150 Q165 132 360 94" fill="none" stroke="#ffffff" stroke-width="10" stroke-linecap="round"/>
+            <path d="M185 138 Q220 175 245 202" fill="none" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/>
+
+            <!-- Jal Mahal Lake -->
+            <ellipse cx="212" cy="84" rx="68" ry="34" fill="#d3e3e0"/>
+            <ellipse cx="212" cy="84" rx="58" ry="26" fill="#dfece9" opacity="0.65"/>
+            <rect x="206" y="79" width="12" height="8" rx="1.5" fill="#c9a25e" opacity="0.8"/>
+
+            <!-- Labels -->
+            <text x="20" y="28" fill="#a29280" font-size="8" font-family="Montserrat, sans-serif" letter-spacing="1.4" font-weight="600">AMER HILLS</text>
+            <text x="184" y="102" fill="#6f8d88" font-size="7.5" font-family="Montserrat, sans-serif" letter-spacing="1" font-weight="600">JAL MAHAL</text>
+            <text x="122" y="156" fill="#a89886" font-size="7.5" font-family="Montserrat, sans-serif" letter-spacing="1" font-weight="600" transform="rotate(-7 122 156)">AMER ROAD</text>
+
+            <!-- Animated Dashed Route -->
+            <path class="route-dash" d="M62 152 C115 138 175 162 240 132 C275 116 286 96 296 76" fill="none" stroke="#6e1f2f" stroke-width="2.6" stroke-linecap="round"/>
+            <circle cx="62" cy="152" r="4" fill="#c9a25e" stroke="#ffffff" stroke-width="2"/>
+
+            <!-- Pulsing Wine Destination Pin -->
+            <g transform="translate(296, 72)">
+              <circle class="pin-pulse" cx="0" cy="0" r="11" fill="#6e1f2f" opacity="0.35"/>
+              <path d="M0 -24 C-8 -24 -13 -18 -13 -11 C-13 -3 0 6 0 6 C0 6 13 -3 13 -11 C13 -18 8 -24 0 -24 Z" fill="#6e1f2f"/>
+              <circle cx="0" cy="-12" r="4.5" fill="#fdf6f3"/>
+            </g>
+          </svg>
+
+          <!-- Floating Venue Tooltip -->
+          <div class="absolute bottom-3 left-3 bg-white/95 backdrop-blur-sm px-3.5 py-2 rounded-xl shadow-md border border-gold/25 text-left transition-transform group-hover:-translate-y-0.5">
+            <p class="font-serif text-[13px] font-semibold text-wine leading-tight">Raj Vilas Palace</p>
+            <p class="text-[9.5px] text-ink/65 mt-0.5">Tap to open in Maps</p>
+          </div>
+        </a>
+
+        <!-- Address & Action Buttons -->
+        <div class="reveal-item mt-6">
+          <h3 class="font-serif text-[23px] text-wine font-medium">Raj Vilas Palace</h3>
+          <p class="mt-1.5 text-[12px] text-ink/75 leading-relaxed">
+            Amer Road, Near Jal Mahal, Jaipur 302002
+          </p>
+
+          <div class="mt-6 flex flex-col items-center gap-3">
+            <a href="https://www.google.com/maps/search/?api=1&query=Raj+Vilas+Palace+Amer+Road+Near+Jal+Mahal+Jaipur+302002"
+               target="_blank"
+               rel="noopener noreferrer"
+               class="w-[220px] py-3 rounded-full bg-wine hover:bg-wineDark text-ivory text-[10.5px] tracking-[0.2em] uppercase font-semibold inline-flex items-center justify-center gap-2 shadow-[0_10px_22px_rgba(110,31,47,0.28)] active:scale-95 transition">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polygon points="3 11 22 2 13 21 11 13 3 11"/>
+              </svg>
+              GET DIRECTIONS
+            </a>
+
+            <button id="copy-address-btn" type="button"
+                    class="w-[220px] py-3 rounded-full border border-wine/40 bg-white/80 hover:bg-wine/5 text-wine text-[10.5px] tracking-[0.2em] uppercase font-semibold inline-flex items-center justify-center gap-2 active:scale-95 transition">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="9" y="9" width="13" height="13" rx="2"/>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+              </svg>
+              COPY ADDRESS
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================================
+           8. RSVP & CLOSING BLESSING
+           ========================================================== -->
+      <section id="rsvp" class="relative py-12 px-6 text-center">
+        <div class="reveal-item">
+          <p class="text-[10px] tracking-[0.28em] uppercase text-goldDark font-semibold">KINDLY RESPOND</p>
+          <h2 class="mt-1.5 font-serif text-[32px] text-wine font-medium">Will You Join Us?</h2>
+        </div>
+
+        <div class="reveal-item mt-6 rounded-[24px] bg-white/88 border border-gold/40 shadow-[0_14px_38px_rgba(110,31,47,0.08)] p-6 text-left relative overflow-hidden">
+          <form id="rsvp-form" novalidate class="space-y-4">
+            <div>
+              <label for="rsvp-name" class="block text-[10px] tracking-[0.18em] uppercase text-goldDark font-semibold mb-1.5">
+                Your Full Name
+              </label>
+              <input id="rsvp-name" type="text" placeholder="e.g. Rohan &amp; Priya Kapoor"
+                     class="w-full px-4 py-3 rounded-xl bg-ivory border border-gold/35 text-[13px] text-ink placeholder:text-ink/35 focus:outline-none focus:border-wine transition"/>
+              <p id="rsvp-error" class="hidden mt-1.5 text-[11px] text-wine font-medium">Please enter your name so we know who is celebrating with us.</p>
+            </div>
+
+            <div>
+              <span class="block text-[10px] tracking-[0.18em] uppercase text-goldDark font-semibold mb-1.5">
+                Attendance
+              </span>
+              <div class="grid grid-cols-2 gap-2.5">
+                <button type="button" data-attend="yes" class="attend-btn py-2.5 px-3 rounded-xl border border-wine bg-wine text-ivory text-[11px] font-semibold transition active:scale-95">
+                  Attending
+                </button>
+                <button type="button" data-attend="no" class="attend-btn py-2.5 px-3 rounded-xl border border-gold/40 bg-ivory text-ink/75 text-[11px] font-medium transition active:scale-95">
+                  Regretfully Decline
+                </button>
+              </div>
+            </div>
+
+            <div id="guest-count-row" class="flex items-center justify-between bg-ivory border border-gold/30 rounded-xl px-4 py-2.5 transition-all">
+              <span class="text-[11px] font-medium text-ink/80">Number of Guests</span>
+              <div class="flex items-center gap-3">
+                <button id="guests-minus" type="button" aria-label="Decrease guests" class="w-8 h-8 rounded-full border border-wine/30 bg-white text-wine font-semibold flex items-center justify-center active:scale-90 transition">&minus;</button>
+                <span id="guests-value" class="font-serif text-[18px] text-wine font-semibold w-5 text-center">2</span>
+                <button id="guests-plus" type="button" aria-label="Increase guests" class="w-8 h-8 rounded-full border border-wine/30 bg-white text-wine font-semibold flex items-center justify-center active:scale-90 transition">+</button>
+              </div>
+            </div>
+
+            <div>
+              <label for="rsvp-note" class="block text-[10px] tracking-[0.18em] uppercase text-goldDark font-semibold mb-1.5">
+                Blessings for the Couple (Optional)
+              </label>
+              <input id="rsvp-note" type="text" placeholder="Wishing you a lifetime of love &amp; laughter…"
+                     class="w-full px-4 py-3 rounded-xl bg-ivory border border-gold/35 text-[13px] text-ink placeholder:text-ink/35 focus:outline-none focus:border-wine transition"/>
+            </div>
+
+            <button type="submit"
+                    class="w-full py-3.5 rounded-full bg-wine hover:bg-wineDark text-ivory text-[11px] tracking-[0.22em] uppercase font-semibold shadow-[0_10px_24px_rgba(110,31,47,0.28)] active:scale-[0.98] transition">
+              Send RSVP
+            </button>
+          </form>
+
+          <!-- Celebratory Confirmation State -->
+          <div id="rsvp-confirmed" class="hidden py-5 text-center">
+            <div class="w-12 h-12 rounded-full bg-wine/10 border border-gold/45 text-wine mx-auto flex items-center justify-center mb-3">
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M20 6L9 17l-5-5"/>
+              </svg>
+            </div>
+            <h3 id="rsvp-thanks-title" class="font-serif text-[23px] text-wine">Thank You!</h3>
+            <p id="rsvp-thanks-body" class="mt-2 text-[12px] text-ink/80 leading-relaxed max-w-[260px] mx-auto"></p>
+            <button id="rsvp-edit-btn" type="button" class="mt-4 text-[10px] tracking-[0.18em] uppercase text-goldDark underline underline-offset-4 font-semibold">
+              Update Response
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Closing Blessing & Luxury Designer Studio Footer -->
+      <footer id="closing" class="relative pt-10 pb-24 px-6 text-center">
+        <div class="reveal-item flex flex-col items-center">
+          <!-- Gold Ganesh ji Emblem -->
+          <div class="w-14 h-14 rounded-full border border-gold/60 bg-white/85 flex items-center justify-center shadow-sm">
+            <svg class="w-8 h-8 text-goldDark" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M32 10 C34 12 36 14 35 17 C33 19 31 19 29 17 C28 14 30 12 32 10 Z" />
+              <path d="M24 20 C27 17 37 17 40 20" />
+              <path d="M22 24 C15 24 12 31 15 37 C18 42 23 40 24 36" />
+              <path d="M42 24 C49 24 52 31 49 37 C46 42 41 40 40 36" />
+              <path d="M26 24 C25 32 27 40 32 43 C35 45 36 49 33 52 C30 54 26 52 27 49" />
+              <path d="M38 24 C39 30 38 35 35 39" />
+            </svg>
+          </div>
+
+          <div class="mt-5 flex items-center gap-3">
+            <span class="w-10 h-[1px] bg-gradient-to-r from-transparent to-gold/60"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-gold"></span>
+            <span class="w-10 h-[1px] bg-gradient-to-l from-transparent to-gold/60"></span>
+          </div>
+
+          <h2 class="mt-5 font-serif text-[26px] leading-snug text-wine max-w-[270px]">
+            We can&rsquo;t wait to celebrate with you
+          </h2>
+
+          <p class="mt-3 font-serif italic text-[15px] text-ink/80">
+            With love, the Sharma &amp; Mehta families
+          </p>
+
+          <p class="mt-6 text-[9px] tracking-[0.26em] uppercase text-goldDark/80 font-medium">
+            Aarav &amp; Ananya &middot; 12.02.2027
+          </p>
+        </div>
+
+        <!-- ========================================================
+             9. DESIGNER CREDIT FOOTER — AK ⭐ STUDIO
+             ======================================================== -->
+        <div class="reveal-item mt-10 pt-2 flex flex-col items-center">
+          <!-- Delicate Champagne-Gold Ornamental Divider -->
+          <div class="w-full max-w-[260px] flex items-center justify-center gap-2.5 mb-7" aria-hidden="true">
+            <span class="flex-1 h-[1px] bg-gradient-to-r from-transparent via-gold/55 to-gold/75"></span>
+            <svg class="w-4 h-4 text-gold" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2 L14.2 9.8 L22 12 L14.2 14.2 L12 22 L9.8 14.2 L2 12 L9.8 9.8 Z"/>
+            </svg>
+            <span class="flex-1 h-[1px] bg-gradient-to-l from-transparent via-gold/55 to-gold/75"></span>
+          </div>
+
+          <p class="text-[8.5px] tracking-[0.3em] uppercase text-goldDark/90 font-semibold">
+            CRAFTED &amp; DESIGNED BY
+          </p>
+
+          <p class="mt-1.5 font-serif text-[23px] font-semibold tracking-[0.04em] text-wine flex items-center justify-center gap-1.5">
+            <span>Ak</span>
+            <span class="text-[18px] drop-shadow-[0_1px_4px_rgba(201,162,94,0.55)]" aria-hidden="true">⭐</span>
+            <span class="bg-gradient-to-r from-wine via-goldDark to-wine bg-clip-text text-transparent">Studio</span>
+          </p>
+
+          <a href="https://instagram.com/akashbehera2580"
+             target="_blank"
+             rel="noopener noreferrer"
+             aria-label="Visit Ak Studio on Instagram @akashbehera2580"
+             class="studio-ig-pill mt-3.5 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/85 backdrop-blur-sm border border-gold/55 text-wine text-[11.5px] font-medium shadow-[0_6px_18px_rgba(110,31,47,0.08)]">
+            <!-- Crisp SVG Instagram Camera Icon -->
+            <svg class="w-4 h-4 text-wine shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="2.5" y="2.5" width="19" height="19" rx="5.5" ry="5.5"/>
+              <circle cx="12" cy="12" r="4.2"/>
+              <circle cx="17.4" cy="6.6" r="1" fill="currentColor" stroke="none"/>
+            </svg>
+            <span class="tracking-[0.03em]">@akashbehera2580</span>
+          </a>
+        </div>
+      </footer>
+    </main>
+
+    <!-- ============================================================
+         FLOATING BOTTOM-RIGHT EQUALIZER PLAY/PAUSE BUTTON
+         ============================================================ -->
+    <button id="audio-toggle-btn" type="button" aria-label="Toggle wedding music"
+            class="fixed bottom-5 right-4 sm:right-[calc(50%-200px)] z-50 w-12 h-12 rounded-full bg-white/92 backdrop-blur-md border border-gold/55 shadow-[0_8px_24px_rgba(110,31,47,0.18)] flex items-center justify-center gap-[3.5px] opacity-0 pointer-events-none transition-all duration-500 active:scale-90">
+      <span class="eq-bar eq-bar-1 h-[6px]"></span>
+      <span class="eq-bar eq-bar-2 h-[12px]"></span>
+      <span class="eq-bar eq-bar-3 h-[8px]"></span>
+    </button>
+
+    <!-- Sleek Toast Message (No alert() used anywhere) -->
+    <div id="toast-msg"
+         class="fixed bottom-20 left-1/2 -translate-x-1/2 translate-y-4 opacity-0 pointer-events-none z-50 px-5 py-2.5 rounded-full bg-wine text-ivory text-[11.5px] font-medium shadow-xl border border-goldLight/40 whitespace-nowrap">
+      Address copied to clipboard
+    </div>
+
+  </div><!-- /#app-stage -->
+
+  <!-- ============================================================
+       INTERACTIVE SCRIPTS: AUDIO, PETALS, PULL SCROLL, 3D CAROUSELS
+       ============================================================ -->
+  <script>
+    (function () {
+      'use strict';
+
+      const WEDDING_CONFIG = {
+        couple: 'Aarav & Ananya',
+        weddingDateISO: '2027-02-12T22:30:00+05:30',
+        venueName: 'Raj Vilas Palace',
+        venueAddress: 'Raj Vilas Palace — Amer Road, Near Jal Mahal, Jaipur 302002'
+      };
+
+      /* ----------------------------------------------------------
+         WEDDING FESTIVITIES DATA (All 6 Ceremonies)
+         ---------------------------------------------------------- */
+      const FESTIVITIES_DATA = [
+        {
+          title: 'Mata Pujan',
+          datetime: 'WED · 10 FEB · 10:00 AM',
+          venue: 'Sharma Residence, Malviya Nagar',
+          dressCode: 'Traditional wear',
+          swatchStyle: 'background: linear-gradient(135deg, #ede2c7, #cbb78e);',
+          sceneBg: `
+            <svg viewBox="0 0 260 170" class="w-full h-full object-cover" preserveAspectRatio="xMidYMid slice">
+              <defs>
+                <linearGradient id="mpBg" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#e99352"/>
+                  <stop offset="65%" stop-color="#f3c69f"/>
+                  <stop offset="100%" stop-color="#fffaf5"/>
+                </linearGradient>
+                <filter id="mpBlur"><feGaussianBlur stdDeviation="3.4"/></filter>
+              </defs>
+              <rect width="260" height="170" fill="url(#mpBg)"/>
+              <g filter="url(#mpBlur)">
+                <rect x="24" y="60" width="212" height="58" rx="6" fill="#be2b24" opacity="0.82"/>
+                <rect x="24" y="54" width="212" height="10" fill="#f0c05a" opacity="0.9"/>
+                <circle cx="62" cy="36" r="14" fill="#ffe899" opacity="0.85"/>
+                <circle cx="198" cy="36" r="14" fill="#ffe899" opacity="0.85"/>
+                <circle cx="130" cy="32" r="20" fill="#a85525" opacity="0.72"/>
+                <ellipse cx="130" cy="14" rx="22" ry="12" fill="#4f8243" opacity="0.65"/>
+              </g>
+            </svg>`,
+          iconSvg: `
+            <svg viewBox="0 0 48 48" class="w-9 h-9 icon-float">
+              <path d="M18 17 C16 11 22 10 24 14 C26 10 32 11 30 17" fill="#5b8c4a"/>
+              <circle cx="24" cy="16" r="4.5" fill="#9c5a2c"/>
+              <ellipse cx="24" cy="29" rx="9" ry="8.5" fill="#d48c3b"/>
+              <path d="M18 27 Q24 31 30 27" fill="none" stroke="#9b2727" stroke-width="1.6"/>
+              <rect x="19" y="19" width="10" height="3" rx="1.5" fill="#b86b24"/>
+              <circle cx="35" cy="35" r="2.2" fill="#f3b63a"/>
+              <path d="M31 37 Q35 41 39 37 Z" fill="#a3492b"/>
+            </svg>`
+        },
+        {
+          title: 'Haldi',
+          datetime: 'WED · 10 FEB · 3:00 PM',
+          venue: 'Garden Lawns, Raj Vilas Palace',
+          dressCode: 'Wear yellow',
+          swatchStyle: 'background: linear-gradient(135deg, #fae06b, #e3ac17);',
+          sceneBg: `
+            <svg viewBox="0 0 260 170" class="w-full h-full object-cover" preserveAspectRatio="xMidYMid slice">
+              <defs>
+                <linearGradient id="hdBg" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#f7c832"/>
+                  <stop offset="68%" stop-color="#fbe494"/>
+                  <stop offset="100%" stop-color="#fffaf5"/>
+                </linearGradient>
+                <filter id="hdBlur"><feGaussianBlur stdDeviation="3.4"/></filter>
+              </defs>
+              <rect width="260" height="170" fill="url(#hdBg)"/>
+              <g filter="url(#hdBlur)">
+                <circle cx="40" cy="24" r="14" fill="#ea8a1e" opacity="0.72"/>
+                <circle cx="72" cy="18" r="12" fill="#f7b222" opacity="0.82"/>
+                <circle cx="188" cy="18" r="12" fill="#f7b222" opacity="0.82"/>
+                <circle cx="220" cy="24" r="14" fill="#ea8a1e" opacity="0.72"/>
+                <circle cx="130" cy="52" r="14" fill="#4f3224" opacity="0.65"/>
+                <path d="M104 110 C108 72 152 72 156 110 Z" fill="#e59e12" opacity="0.85"/>
+                <rect x="64" y="102" width="132" height="22" rx="6" fill="#d98118" opacity="0.65"/>
+              </g>
+            </svg>`,
+          iconSvg: `
+            <svg viewBox="0 0 48 48" class="w-9 h-9 icon-float">
+              <path d="M12 26 C12 35 17 39 24 39 C31 39 36 35 36 26 Z" fill="#c9802b"/>
+              <ellipse cx="24" cy="26" rx="12" ry="4" fill="#f2bc24"/>
+              <circle cx="20" cy="25" r="2.2" fill="#ffdf6b"/>
+              <circle cx="27" cy="24" r="2" fill="#e69617"/>
+              <circle cx="15" cy="17" r="2.5" fill="#f4b324"/>
+              <circle cx="24" cy="13" r="3" fill="#eb921c"/>
+              <circle cx="33" cy="17" r="2.5" fill="#f4b324"/>
+            </svg>`
+        },
+        {
+          title: 'Mehendi',
+          datetime: 'THU · 11 FEB · 12:00 NOON',
+          venue: 'The Courtyard, Raj Vilas Palace',
+          dressCode: 'Wear green',
+          swatchStyle: 'background: linear-gradient(135deg, #8ab072, #557a41);',
+          sceneBg: `
+            <svg viewBox="0 0 260 170" class="w-full h-full object-cover" preserveAspectRatio="xMidYMid slice">
+              <defs>
+                <linearGradient id="mhBg" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#9dc08b"/>
+                  <stop offset="68%" stop-color="#dcead1"/>
+                  <stop offset="100%" stop-color="#fffaf5"/>
+                </linearGradient>
+                <filter id="mhBlur"><feGaussianBlur stdDeviation="3.2"/></filter>
+              </defs>
+              <rect width="260" height="170" fill="url(#mhBg)"/>
+              <g filter="url(#mhBlur)">
+                <rect x="64" y="28" width="46" height="84" rx="22" transform="rotate(-14 87 70)" fill="#dfae88" opacity="0.82"/>
+                <rect x="148" y="28" width="46" height="84" rx="22" transform="rotate(14 171 70)" fill="#dfae88" opacity="0.82"/>
+                <circle cx="88" cy="74" r="12" fill="#8b4d2b" opacity="0.55"/>
+                <circle cx="170" cy="74" r="12" fill="#8b4d2b" opacity="0.55"/>
+                <circle cx="34" cy="48" r="16" fill="#6f9c5b" opacity="0.5"/>
+                <circle cx="226" cy="52" r="16" fill="#6f9c5b" opacity="0.5"/>
+              </g>
+            </svg>`,
+          iconSvg: `
+            <svg viewBox="0 0 48 48" class="w-9 h-9 icon-float">
+              <path d="M28 11 L33 13 L26 32 L24 31 Z" fill="#4f7c3c"/>
+              <path d="M28 11 L33 13 L31.5 16.5 L27 14.8 Z" fill="#c9a25e"/>
+              <path d="M13 36 C16 32 20 38 23 33 C25 30 21 26 18 29 C16 31 19 34 22 33" fill="none" stroke="#6d3a20" stroke-width="1.8" stroke-linecap="round"/>
+              <circle cx="34" cy="27" r="1.8" fill="#6d3a20"/>
+              <circle cx="31" cy="34" r="1.4" fill="#6d3a20"/>
+            </svg>`
+        },
+        {
+          title: 'Sangeet',
+          datetime: 'THU · 11 FEB · 7:30 PM',
+          venue: 'Darbar Hall, Raj Vilas Palace',
+          dressCode: 'Indo-western, purple & pink',
+          swatchStyle: 'background: linear-gradient(135deg, #9a38b5, #e6599c);',
+          sceneBg: `
+            <svg viewBox="0 0 260 170" class="w-full h-full object-cover" preserveAspectRatio="xMidYMid slice">
+              <defs>
+                <linearGradient id="sgBg" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#6b2267"/>
+                  <stop offset="65%" stop-color="#bc6a9e"/>
+                  <stop offset="100%" stop-color="#fffaf5"/>
+                </linearGradient>
+                <filter id="sgBlur"><feGaussianBlur stdDeviation="3.4"/></filter>
+              </defs>
+              <rect width="260" height="170" fill="url(#sgBg)"/>
+              <g filter="url(#sgBlur)">
+                <polygon points="75,0 35,120 115,120" fill="#f79ad3" opacity="0.24"/>
+                <polygon points="185,0 145,120 225,120" fill="#f5d178" opacity="0.22"/>
+                <circle cx="62" cy="64" r="10" fill="#f582b8"/>
+                <path d="M44 122 L62 76 L80 122 Z" fill="#e64d92" opacity="0.85"/>
+                <circle cx="110" cy="60" r="10" fill="#f4ca4c"/>
+                <path d="M92 122 L110 72 L128 122 Z" fill="#d97538" opacity="0.85"/>
+                <circle cx="158" cy="62" r="10" fill="#49b5c7"/>
+                <path d="M140 122 L158 74 L176 122 Z" fill="#8d36a8" opacity="0.85"/>
+                <circle cx="204" cy="64" r="10" fill="#e8584a"/>
+                <path d="M188 122 L204 76 L220 122 Z" fill="#cf2c68" opacity="0.85"/>
+              </g>
+            </svg>`,
+          iconSvg: `
+            <svg viewBox="0 0 48 48" class="w-9 h-9 icon-float">
+              <rect x="12" y="19" width="24" height="14" rx="5" fill="#9c4832"/>
+              <ellipse cx="12" cy="26" rx="3" ry="7" fill="#f5e6d2" stroke="#78301f" stroke-width="1.2"/>
+              <ellipse cx="36" cy="26" rx="3" ry="7" fill="#f5e6d2" stroke="#78301f" stroke-width="1.2"/>
+              <path d="M16 19 L21 33 L27 19 L32 33" fill="none" stroke="#f0c76e" stroke-width="1.3"/>
+              <circle cx="19" cy="12" r="1.8" fill="#a83da8"/>
+              <path d="M29 14 L29 9 L34 8 L34 13" fill="none" stroke="#d94e8f" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>`
+        },
+        {
+          title: 'Ghat Sthapana',
+          datetime: 'FRI · 12 FEB · 9:00 AM',
+          venue: 'Mandir Courtyard, Raj Vilas Palace',
+          dressCode: 'Orange & saffron',
+          swatchStyle: 'background: linear-gradient(135deg, #f39543, #d45b1c);',
+          sceneBg: `
+            <svg viewBox="0 0 260 170" class="w-full h-full object-cover" preserveAspectRatio="xMidYMid slice">
+              <defs>
+                <linearGradient id="gsBg" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#df8656"/>
+                  <stop offset="68%" stop-color="#f3c5a6"/>
+                  <stop offset="100%" stop-color="#fffaf5"/>
+                </linearGradient>
+                <filter id="gsBlur"><feGaussianBlur stdDeviation="3.4"/></filter>
+              </defs>
+              <rect width="260" height="170" fill="url(#gsBg)"/>
+              <g filter="url(#gsBlur)">
+                <circle cx="70" cy="68" r="24" fill="#ffe794" opacity="0.8"/>
+                <circle cx="190" cy="68" r="24" fill="#ffe794" opacity="0.8"/>
+                <path d="M46 96 Q70 112 94 96 Z" fill="#9c4521" opacity="0.8"/>
+                <path d="M166 96 Q190 112 214 96 Z" fill="#9c4521" opacity="0.8"/>
+                <circle cx="130" cy="54" r="26" fill="#ffd97d" opacity="0.5"/>
+              </g>
+            </svg>`,
+          iconSvg: `
+            <svg viewBox="0 0 48 48" class="w-9 h-9 icon-float">
+              <path d="M18 18 C17 12 22 11 24 15 C26 11 31 12 30 18" fill="#4f8240"/>
+              <circle cx="24" cy="17" r="4" fill="#8f4a22"/>
+              <path d="M15 28 C15 22 19 20 24 20 C29 20 33 22 33 28 C33 35 29 38 24 38 C19 38 15 35 15 28 Z" fill="#c95b26"/>
+              <path d="M16 26 L32 26" stroke="#f5cb69" stroke-width="2"/>
+              <circle cx="24" cy="31" r="2" fill="#f5cb69"/>
+            </svg>`
+        },
+        {
+          title: 'Baraat & Pheras',
+          datetime: 'FRI · 12 FEB · 7:00 PM',
+          venue: 'The Mandap, Raj Vilas Palace',
+          dressCode: 'Festive red & gold',
+          swatchStyle: 'background: linear-gradient(135deg, #8e152c 50%, #dfc06a 50%);',
+          sceneBg: `
+            <svg viewBox="0 0 260 170" class="w-full h-full object-cover" preserveAspectRatio="xMidYMid slice">
+              <defs>
+                <linearGradient id="bpBg" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#5d1323"/>
+                  <stop offset="65%" stop-color="#9e3e4d"/>
+                  <stop offset="100%" stop-color="#fffaf5"/>
+                </linearGradient>
+                <filter id="bpBlur"><feGaussianBlur stdDeviation="3.4"/></filter>
+              </defs>
+              <rect width="260" height="170" fill="url(#bpBg)"/>
+              <g filter="url(#bpBlur)">
+                <rect x="44" y="16" width="12" height="110" fill="#e5be6b" opacity="0.75"/>
+                <rect x="204" y="16" width="12" height="110" fill="#e5be6b" opacity="0.75"/>
+                <path d="M40 22 Q130 48 220 22" fill="none" stroke="#f0c86d" stroke-width="10" opacity="0.8"/>
+                <circle cx="130" cy="96" r="24" fill="#ffba42" opacity="0.82"/>
+                <circle cx="130" cy="96" r="12" fill="#fff2b2" opacity="0.9"/>
+              </g>
+            </svg>`,
+          iconSvg: `
+            <svg viewBox="0 0 48 48" class="w-9 h-9 icon-float">
+              <line x1="12" y1="16" x2="36" y2="16" stroke="#8e1b30" stroke-width="2.4" stroke-linecap="round"/>
+              <path d="M12 16 L24 10 L36 16" fill="none" stroke="#c9a25e" stroke-width="2" stroke-linejoin="round"/>
+              <line x1="15" y1="16" x2="15" y2="37" stroke="#c9a25e" stroke-width="2"/>
+              <line x1="33" y1="16" x2="33" y2="37" stroke="#c9a25e" stroke-width="2"/>
+              <path d="M24 26 C26.5 29 27 32 24 34 C21 32 21.5 29 24 26 Z" fill="#f39c2b"/>
+              <rect x="19" y="34" width="10" height="3.5" rx="1" fill="#8e1b30"/>
+            </svg>`
+        }
+      ];
+
+      /* ----------------------------------------------------------
+         OUR STORY PORTRAIT MEMORY CARDS (5 Chapters)
+         ---------------------------------------------------------- */
+      const STORY_DATA = [
+        {
+          caption: 'First Coffee in Jaipur',
+          sub: 'A sunlit courtyard, two warm cups & endless smiles',
+          artworkSvg: `
+            <svg viewBox="0 0 260 320" class="w-full h-full object-cover" preserveAspectRatio="xMidYMid slice">
+              <defs>
+                <linearGradient id="st1" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#f6dcc8"/>
+                  <stop offset="55%" stop-color="#e5b4a1"/>
+                  <stop offset="100%" stop-color="#7c3a46"/>
+                </linearGradient>
+              </defs>
+              <rect width="260" height="320" fill="url(#st1)"/>
+              <circle cx="130" cy="108" r="56" fill="#fff4df" opacity="0.68"/>
+              <path d="M24 320 L24 118 Q130 34 236 118 L236 320 Z" fill="none" stroke="#fff7ec" stroke-width="2" opacity="0.55"/>
+              <!-- Warm bistro table & coffee cups -->
+              <rect x="24" y="246" width="212" height="74" rx="14" fill="#4f202a" opacity="0.82"/>
+              <rect x="74" y="214" width="32" height="28" rx="6" fill="#fdf6f3"/>
+              <rect x="154" y="218" width="32" height="24" rx="6" fill="#f3d6cc"/>
+              <path d="M88 206 Q95 192 86 180 M168 208 Q175 194 166 182" fill="none" stroke="#fff8ee" stroke-width="1.6" stroke-linecap="round" opacity="0.78"/>
+              <circle cx="64" cy="84" r="6" fill="#fff5df" opacity="0.55"/>
+              <circle cx="198" cy="96" r="8" fill="#fff5df" opacity="0.48"/>
+            </svg>`
+        },
+        {
+          caption: 'Monsoon Drive',
+          sub: 'Raindrops on the windshield & songs along Amer Road',
+          artworkSvg: `
+            <svg viewBox="0 0 260 320" class="w-full h-full object-cover" preserveAspectRatio="xMidYMid slice">
+              <defs>
+                <linearGradient id="st2" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#4e5c69"/>
+                  <stop offset="52%" stop-color="#9b8581"/>
+                  <stop offset="100%" stop-color="#4b2c32"/>
+                </linearGradient>
+              </defs>
+              <rect width="260" height="320" fill="url(#st2)"/>
+              <!-- Soft rain streaks -->
+              <g stroke="#fff8ee" stroke-width="1.1" opacity="0.32">
+                <line x1="36" y1="18" x2="26" y2="74"/>
+                <line x1="88" y1="10" x2="78" y2="66"/>
+                <line x1="154" y1="22" x2="144" y2="78"/>
+                <line x1="216" y1="14" x2="206" y2="70"/>
+              </g>
+              <!-- Misty Aravalli Hills -->
+              <path d="M0 180 Q70 132 140 168 Q205 136 260 172 L260 220 L0 220 Z" fill="#5e4652" opacity="0.72"/>
+              <!-- Winding Golden-Lit Road -->
+              <path d="M98 320 Q132 248 136 184 L148 184 Q162 248 214 320 Z" fill="#321d24" opacity="0.85"/>
+              <circle cx="116" cy="238" r="14" fill="#ffe19e" opacity="0.55"/>
+              <circle cx="164" cy="238" r="14" fill="#ffe19e" opacity="0.55"/>
+            </svg>`
+        },
+        {
+          caption: 'The Proposal',
+          sub: 'Under lantern light and a sky full of Jaipur stars',
+          artworkSvg: `
+            <svg viewBox="0 0 260 320" class="w-full h-full object-cover" preserveAspectRatio="xMidYMid slice">
+              <defs>
+                <linearGradient id="st3" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#321426"/>
+                  <stop offset="55%" stop-color="#6e2339"/>
+                  <stop offset="100%" stop-color="#3c101d"/>
+                </linearGradient>
+              </defs>
+              <rect width="260" height="320" fill="url(#st3)"/>
+              <circle cx="52" cy="48" r="2" fill="#ffe9b3"/>
+              <circle cx="96" cy="34" r="1.6" fill="#ffe9b3"/>
+              <circle cx="182" cy="44" r="2.2" fill="#ffe9b3"/>
+              <circle cx="218" cy="76" r="1.8" fill="#ffe9b3"/>
+              <circle cx="64" cy="96" r="10" fill="#ffcf77" opacity="0.45"/>
+              <circle cx="196" cy="108" r="12" fill="#ffcf77" opacity="0.4"/>
+              <circle cx="130" cy="118" r="36" fill="#f7c873" opacity="0.22"/>
+              <!-- Sparkling Ring Halo -->
+              <circle cx="130" cy="138" r="24" fill="none" stroke="#f3d691" stroke-width="2.2" opacity="0.88"/>
+              <polygon points="130,104 136,114 130,120 124,114" fill="#fff7dc"/>
+              <g fill="#230b14" opacity="0.9">
+                <circle cx="114" cy="212" r="13"/>
+                <path d="M90 242 C96 226 128 228 130 246 L128 320 L82 320 Z"/>
+                <circle cx="152" cy="196" r="13"/>
+                <path d="M134 222 C140 208 168 208 174 228 L190 320 L130 320 Z"/>
+              </g>
+            </svg>`
+        },
+        {
+          caption: 'Families Meet',
+          sub: 'Warm blessings, marigolds & laughter across two homes',
+          artworkSvg: `
+            <svg viewBox="0 0 260 320" class="w-full h-full object-cover" preserveAspectRatio="xMidYMid slice">
+              <defs>
+                <linearGradient id="st4" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#f7d6a6"/>
+                  <stop offset="56%" stop-color="#eba980"/>
+                  <stop offset="100%" stop-color="#8b3b42"/>
+                </linearGradient>
+              </defs>
+              <rect width="260" height="320" fill="url(#st4)"/>
+              <!-- Festive Marigold Toran Garland -->
+              <path d="M12 24 Q70 72 130 28 Q190 72 248 24" fill="none" stroke="#f5b832" stroke-width="9" stroke-dasharray="1 11" stroke-linecap="round"/>
+              <circle cx="130" cy="134" r="48" fill="#fff3d6" opacity="0.58"/>
+              <!-- Warm Courtyard Silhouettes -->
+              <g fill="#5b222e" opacity="0.78">
+                <circle cx="62" cy="206" r="12"/>
+                <path d="M44 232 C48 218 76 218 80 234 L82 320 L40 320 Z"/>
+                <circle cx="112" cy="192" r="14"/>
+                <path d="M92 220 C96 206 128 206 132 224 L134 320 L86 320 Z"/>
+                <circle cx="150" cy="196" r="13.5"/>
+                <path d="M132 224 C136 210 166 210 172 226 L178 320 L128 320 Z"/>
+                <circle cx="198" cy="206" r="12"/>
+                <path d="M180 232 C184 218 212 218 216 234 L220 320 L176 320 Z"/>
+              </g>
+            </svg>`
+        },
+        {
+          caption: 'Forever Begins',
+          sub: 'Counting every heartbeat to our royal celebration',
+          artworkSvg: `
+            <svg viewBox="0 0 260 320" class="w-full h-full object-cover" preserveAspectRatio="xMidYMid slice">
+              <defs>
+                <linearGradient id="st5" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#f9ebe3"/>
+                  <stop offset="55%" stop-color="#e8c3bc"/>
+                  <stop offset="100%" stop-color="#8b3749"/>
+                </linearGradient>
+              </defs>
+              <rect width="260" height="320" fill="url(#st5)"/>
+              <path d="M36 300 L36 125 A94 94 0 0 1 224 125 L224 300" fill="none" stroke="#c9a25e" stroke-width="2" opacity="0.78"/>
+              <circle cx="66" cy="70" r="14" fill="#d88692" opacity="0.75"/>
+              <circle cx="194" cy="70" r="14" fill="#d88692" opacity="0.75"/>
+              <circle cx="130" cy="36" r="16" fill="#f7e3dc" opacity="0.9"/>
+              <g fill="#611e2d" opacity="0.84">
+                <circle cx="112" cy="176" r="18"/>
+                <circle cx="148" cy="182" r="17"/>
+                <path d="M78 226 C86 198 134 198 138 226 L142 320 L70 320 Z"/>
+                <path d="M124 228 C132 204 176 204 184 232 L196 320 L120 320 Z"/>
+              </g>
+            </svg>`
+        }
+      ];
+
+      /* ----------------------------------------------------------
+         1. ROMANTIC INDIAN INSTRUMENTAL AUDIO (WEB AUDIO API)
+            Synthesizes warm pentatonic santoor/harp plucks + tanpura pad
+         ---------------------------------------------------------- */
+      const WeddingAudio = (function () {
+        let ctx = null;
+        let masterGain = null;
+        let isPlaying = false;
+        let melodyTimer = null;
+        let stepIndex = 0;
+
+        // Warm Raag Bhupali / D Major Pentatonic
+        const NOTES = [293.66, 329.63, 369.99, 440.00, 493.88, 587.33, 659.25, 739.99];
+        const MELODY_PATTERN = [0, 2, 3, 5, 3, 4, 2, 3, 5, 6, 5, 3, 4, 2, 1, 0];
+
+        function initContext() {
+          if (ctx) return;
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (!AudioCtx) return;
+          ctx = new AudioCtx();
+          masterGain = ctx.createGain();
+          masterGain.gain.setValueAtTime(0.0001, ctx.currentTime);
+          masterGain.connect(ctx.destination);
+
+          // Soft tanpura-style warm drone pad
+          const droneFilter = ctx.createBiquadFilter();
+          droneFilter.type = 'lowpass';
+          droneFilter.frequency.setValueAtTime(410, ctx.currentTime);
+
+          const droneGain = ctx.createGain();
+          droneGain.gain.setValueAtTime(0.085, ctx.currentTime);
+
+          const osc1 = ctx.createOscillator();
+          osc1.type = 'sine';
+          osc1.frequency.setValueAtTime(146.83, ctx.currentTime);
+
+          const osc2 = ctx.createOscillator();
+          osc2.type = 'triangle';
+          osc2.frequency.setValueAtTime(220.00, ctx.currentTime);
+
+          osc1.connect(droneFilter);
+          osc2.connect(droneFilter);
+          droneFilter.connect(droneGain);
+          droneGain.connect(masterGain);
+
+          osc1.start();
+          osc2.start();
+        }
+
+        function pluckNote(freq) {
+          if (!ctx || !isPlaying) return;
+          const now = ctx.currentTime;
+          const osc = ctx.createOscillator();
+          const harmonic = ctx.createOscillator();
+          const env = ctx.createGain();
+          const filter = ctx.createBiquadFilter();
+
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(freq, now);
+
+          harmonic.type = 'sine';
+          harmonic.frequency.setValueAtTime(freq * 2, now);
+
+          filter.type = 'lowpass';
+          filter.frequency.setValueAtTime(1580, now);
+          filter.frequency.exponentialRampToValueAtTime(420, now + 2.2);
+
+          env.gain.setValueAtTime(0.0001, now);
+          env.gain.linearRampToValueAtTime(0.13, now + 0.04);
+          env.gain.exponentialRampToValueAtTime(0.0008, now + 2.6);
+
+          osc.connect(filter);
+          harmonic.connect(filter);
+          filter.connect(env);
+          env.connect(masterGain);
+
+          osc.start(now);
+          harmonic.start(now);
+          osc.stop(now + 2.7);
+          harmonic.stop(now + 2.7);
+        }
+
+        function scheduleNextNote() {
+          if (!isPlaying) return;
+          const noteIdx = MELODY_PATTERN[stepIndex % MELODY_PATTERN.length];
+          pluckNote(NOTES[noteIdx]);
+          stepIndex++;
+          const nextDelay = (stepIndex % 4 === 0) ? 1650 : 950;
+          melodyTimer = setTimeout(scheduleNextNote, nextDelay);
+        }
+
+        function updateButtonUI() {
+          const btn = document.getElementById('audio-toggle-btn');
+          if (!btn) return;
+          btn.classList.toggle('audio-playing', isPlaying);
+          btn.style.opacity = '1';
+          btn.style.pointerEvents = 'auto';
+        }
+
+        function play() {
+          try {
+            initContext();
+            if (!ctx) return;
+            if (ctx.state === 'suspended') ctx.resume();
+            isPlaying = true;
+            masterGain.gain.cancelScheduledValues(ctx.currentTime);
+            masterGain.gain.setTargetAtTime(0.42, ctx.currentTime, 0.9);
+            clearTimeout(melodyTimer);
+            scheduleNextNote();
+            updateButtonUI();
+          } catch (err) {
+            console.warn('Audio unavailable:', err);
+          }
+        }
+
+        function pause() {
+          isPlaying = false;
+          clearTimeout(melodyTimer);
+          if (ctx && masterGain) {
+            masterGain.gain.cancelScheduledValues(ctx.currentTime);
+            masterGain.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.25);
+          }
+          updateButtonUI();
+        }
+
+        function toggle() {
+          if (isPlaying) pause();
+          else play();
+        }
+
+        document.addEventListener('visibilitychange', () => {
+          if (document.hidden && isPlaying && ctx && masterGain) {
+            masterGain.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.15);
+          } else if (!document.hidden && isPlaying && ctx && masterGain) {
+            masterGain.gain.setTargetAtTime(0.42, ctx.currentTime, 0.4);
+          }
+        });
+
+        return { play, pause, toggle };
+      })();
+
+      /* ----------------------------------------------------------
+         2. FALLING ROSE PETALS & GOLD CONFETTI ENGINE
+         ---------------------------------------------------------- */
+      const PetalsEngine = (function () {
+        const canvas = document.getElementById('petals-canvas');
+        const ctx = canvas.getContext('2d');
+        let width = 0;
+        let height = 0;
+        let dpr = 1;
+        let particles = [];
+        let running = false;
+
+        const PETAL_COLORS = ['#e9a7ae', '#f4cfd3', '#d98490', '#f9e3e0', '#c76878'];
+        const CONFETTI_COLORS = ['#d4af37', '#e5c98c', '#6e1f2f', '#e59aa5', '#fff2d6'];
+
+        function resize() {
+          const rect = canvas.getBoundingClientRect();
+          dpr = Math.min(window.devicePixelRatio || 1, 2);
+          width = rect.width || Math.min(window.innerWidth, 430);
+          height = rect.height || window.innerHeight;
+          canvas.width = Math.round(width * dpr);
+          canvas.height = Math.round(height * dpr);
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+
+        function createAmbientPetal(randomY) {
+          return {
+            kind: 'petal',
+            x: Math.random() * width,
+            y: randomY ? Math.random() * height : -20 - Math.random() * 60,
+            vx: (Math.random() - 0.5) * 0.45,
+            vy: 0.55 + Math.random() * 0.72,
+            size: 5 + Math.random() * 5.8,
+            rot: Math.random() * Math.PI * 2,
+            vRot: (Math.random() - 0.5) * 0.03,
+            swayPhase: Math.random() * Math.PI * 2,
+            swaySpeed: 0.015 + Math.random() * 0.02,
+            color: PETAL_COLORS[Math.floor(Math.random() * PETAL_COLORS.length)],
+            alpha: 0.55 + Math.random() * 0.35,
+            ambient: true
+          };
+        }
+
+        function burst(originXRatio, originYRatio, count, includeConfetti) {
+          const cx = width * originXRatio;
+          const cy = height * originYRatio;
+          for (let i = 0; i < count; i++) {
+            const angle = Math.random() * Math.PI * 2;
+            const speed = 1.6 + Math.random() * 4.2;
+            const isConfetti = includeConfetti && Math.random() > 0.45;
+            particles.push({
+              kind: isConfetti ? 'confetti' : 'petal',
+              x: cx + (Math.random() - 0.5) * 30,
+              y: cy + (Math.random() - 0.5) * 20,
+              vx: Math.cos(angle) * speed,
+              vy: Math.sin(angle) * speed - 2.2,
+              size: isConfetti ? (4 + Math.random() * 4) : (6 + Math.random() * 6),
+              rot: Math.random() * Math.PI * 2,
+              vRot: (Math.random() - 0.5) * 0.14,
+              swayPhase: Math.random() * Math.PI * 2,
+              swaySpeed: 0.04,
+              color: isConfetti
+                ? CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)]
+                : PETAL_COLORS[Math.floor(Math.random() * PETAL_COLORS.length)],
+              alpha: 0.95,
+              ambient: false
+            });
+          }
+        }
+
+        function drawParticle(p) {
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(p.rot);
+          ctx.globalAlpha = Math.max(0, p.alpha);
+          ctx.fillStyle = p.color;
+
+          if (p.kind === 'confetti') {
+            ctx.fillRect(-p.size / 2, -p.size / 3, p.size, p.size * 0.65);
+          } else {
+            ctx.beginPath();
+            ctx.moveTo(0, -p.size);
+            ctx.bezierCurveTo(p.size * 0.85, -p.size * 0.6, p.size * 0.75, p.size * 0.7, 0, p.size);
+            ctx.bezierCurveTo(-p.size * 0.75, p.size * 0.7, -p.size * 0.85, -p.size * 0.6, 0, -p.size);
+            ctx.fill();
+          }
+          ctx.restore();
+        }
+
+        function loop() {
+          if (!running) return;
+          if (document.hidden) {
+            requestAnimationFrame(loop);
+            return;
+          }
+
+          ctx.clearRect(0, 0, width, height);
+
+          for (let i = particles.length - 1; i >= 0; i--) {
+            const p = particles[i];
+            p.swayPhase += p.swaySpeed;
+            p.rot += p.vRot;
+
+            if (p.ambient) {
+              p.x += p.vx + Math.sin(p.swayPhase) * 0.35;
+              p.y += p.vy;
+              if (p.y > height + 24) {
+                particles[i] = createAmbientPetal(false);
+              }
+            } else {
+              p.vx *= 0.985;
+              p.vy += 0.075;
+              p.x += p.vx + Math.sin(p.swayPhase) * 0.4;
+              p.y += p.vy;
+              p.alpha -= 0.0085;
+              if (p.alpha <= 0 || p.y > height + 40) {
+                particles.splice(i, 1);
+                continue;
+              }
+            }
+            drawParticle(p);
+          }
+
+          requestAnimationFrame(loop);
+        }
+
+        function start() {
+          if (running) return;
+          resize();
+          for (let i = 0; i < 14; i++) {
+            particles.push(createAmbientPetal(true));
+          }
+          running = true;
+          loop();
+        }
+
+        window.addEventListener('resize', resize);
+        return { start, burst };
+      })();
+
+      /* ----------------------------------------------------------
+         3. TOAST NOTIFICATION (Replaces alert() cleanly)
+         ---------------------------------------------------------- */
+      let toastTimeout = null;
+      function showToast(message) {
+        const el = document.getElementById('toast-msg');
+        if (!el) return;
+        el.textContent = message;
+        el.style.opacity = '1';
+        el.style.transform = 'translate(-50%, 0px)';
+        clearTimeout(toastTimeout);
+        toastTimeout = setTimeout(() => {
+          el.style.opacity = '0';
+          el.style.transform = 'translate(-50%, 16px)';
+        }, 2600);
+      }
+
+      /* ----------------------------------------------------------
+         4. PRELOADER & 3D BOOK OPENING
+         ---------------------------------------------------------- */
+      function initBookOpening() {
+        const preloader = document.getElementById('preloader');
+        const overlay = document.getElementById('book-overlay');
+        const book = document.getElementById('wedding-book');
+        const openBtn = document.getElementById('open-book-btn');
+        const bgRoses = document.getElementById('cover-bg-roses');
+        let opened = false;
+
+        const readyPromise = (document.fonts && document.fonts.ready)
+          ? Promise.race([document.fonts.ready, new Promise(r => setTimeout(r, 1200))])
+          : Promise.resolve();
+
+        readyPromise.then(() => {
+          setTimeout(() => {
+            preloader.classList.add('fade-out');
+            setTimeout(() => preloader.remove(), 700);
+          }, 600);
+        });
+
+        overlay.addEventListener('pointermove', (e) => {
+          if (opened) return;
+          const rect = overlay.getBoundingClientRect();
+          const nx = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+          const ny = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+          bgRoses.style.transform = `translate3d(${(-nx * 10).toFixed(1)}px, ${(-ny * 10).toFixed(1)}px, 0)`;
+        });
+
+        function triggerOpen() {
+          if (opened) return;
+          opened = true;
+
+          WeddingAudio.play();
+          book.classList.add('is-open');
+          PetalsEngine.start();
+          setTimeout(() => PetalsEngine.burst(0.5, 0.42, 34, false), 420);
+
+          setTimeout(() => {
+            overlay.classList.add('opening-zoom');
+            document.body.classList.remove('invite-locked');
+            animateHeroNames();
+          }, 780);
+
+          setTimeout(() => {
+            overlay.style.display = 'none';
+          }, 1750);
+        }
+
+        book.addEventListener('click', triggerOpen);
+        openBtn.addEventListener('click', triggerOpen);
+        book.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            triggerOpen();
+          }
+        });
+
+        document.getElementById('audio-toggle-btn').addEventListener('click', () => {
+          WeddingAudio.toggle();
+        });
+      }
+
+      /* ----------------------------------------------------------
+         5. LETTER-BY-LETTER HERO NAME BLUR-IN ANIMATION
+         ---------------------------------------------------------- */
+      function prepareHeroNames() {
+        document.querySelectorAll('[data-animate-name]').forEach((el) => {
+          const text = el.getAttribute('data-animate-name') || el.textContent.trim();
+          el.textContent = '';
+          [...text].forEach((ch) => {
+            const span = document.createElement('span');
+            span.className = 'name-char';
+            span.textContent = ch === ' ' ? '\u00A0' : ch;
+            el.appendChild(span);
+          });
+        });
+      }
+
+      function animateHeroNames() {
+        const groomChars = document.querySelectorAll('#groom-name .name-char');
+        const brideChars = document.querySelectorAll('#bride-name .name-char');
+
+        groomChars.forEach((span, idx) => {
+          setTimeout(() => span.classList.add('visible'), 220 + idx * 85);
+        });
+
+        const brideStart = 220 + groomChars.length * 85 + 240;
+        brideChars.forEach((span, idx) => {
+          setTimeout(() => span.classList.add('visible'), brideStart + idx * 85);
+        });
+      }
+
+      /* ----------------------------------------------------------
+         6. PULL-TO-REVEAL SCROLL, COUNTDOWN & .ICS DOWNLOAD
+         ---------------------------------------------------------- */
+      function initPullScroll() {
+        const parchment = document.getElementById('scroll-parchment');
+        const handle = document.getElementById('tassel-handle');
+        const visual = document.getElementById('tassel-visual');
+        const finger = document.getElementById('finger-hint');
+        const statusPill = document.getElementById('scroll-status-pill');
+
+        const MAX_HEIGHT = 292;
+        let currentHeight = 0;
+        let isRevealed = false;
+        let isDragging = false;
+        let startY = 0;
+        let startHeight = 0;
+        let movedDist = 0;
+
+        function setScrollHeight(h, smooth) {
+          parchment.classList.toggle('smooth-snap', !!smooth);
+          currentHeight = Math.max(0, Math.min(MAX_HEIGHT, h));
+          parchment.style.height = `${currentHeight}px`;
+        }
+
+        function completeReveal() {
+          isRevealed = true;
+          setScrollHeight(MAX_HEIGHT, true);
+          visual.classList.remove('tassel-sway');
+          if (finger) finger.style.display = 'none';
+          statusPill.textContent = 'See you on Friday, 12 February 2027';
+          statusPill.classList.add('border-gold', 'text-wine', 'font-semibold');
+
+          const rect = parchment.getBoundingClientRect();
+          const yRatio = Math.min(0.85, Math.max(0.2, (rect.top + 120) / window.innerHeight));
+          PetalsEngine.burst(0.5, yRatio, 48, true);
+        }
+
+        handle.addEventListener('pointerdown', (e) => {
+          if (isRevealed) return;
+          isDragging = true;
+          startY = e.clientY;
+          startHeight = currentHeight;
+          movedDist = 0;
+          parchment.classList.remove('smooth-snap');
+          handle.setPointerCapture(e.pointerId);
+        });
+
+        handle.addEventListener('pointermove', (e) => {
+          if (!isDragging || isRevealed) return;
+          const dy = e.clientY - startY;
+          movedDist = Math.max(movedDist, Math.abs(dy));
+          setScrollHeight(startHeight + dy * 1.15, false);
+        });
+
+        function endDrag() {
+          if (!isDragging || isRevealed) return;
+          isDragging = false;
+          if (movedDist < 12 || currentHeight >= MAX_HEIGHT * 0.52) {
+            completeReveal();
+          } else {
+            setScrollHeight(0, true);
+          }
+        }
+
+        handle.addEventListener('pointerup', endDrag);
+        handle.addEventListener('pointercancel', endDrag);
+        handle.addEventListener('keydown', (e) => {
+          if (!isRevealed && (e.key === 'Enter' || e.key === ' ')) {
+            e.preventDefault();
+            completeReveal();
+          }
+        });
+
+        // Live Ticking Countdown to 12 February 2027 22:30 IST
+        const targetTime = new Date(WEDDING_CONFIG.weddingDateISO).getTime();
+        const elDays = document.getElementById('cd-days');
+        const elHours = document.getElementById('cd-hours');
+        const elMins = document.getElementById('cd-mins');
+        const elSecs = document.getElementById('cd-secs');
+
+        function updateCountdown() {
+          const diff = Math.max(0, targetTime - Date.now());
+          const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+          const mins = Math.floor((diff / (1000 * 60)) % 60);
+          const secs = Math.floor((diff / 1000) % 60);
+
+          elDays.textContent = String(days).padStart(2, '0');
+          elHours.textContent = String(hours).padStart(2, '0');
+          elMins.textContent = String(mins).padStart(2, '0');
+          elSecs.textContent = String(secs).padStart(2, '0');
+        }
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+
+        // Download Real .ics Calendar Invite
+        document.getElementById('add-calendar-btn').addEventListener('click', () => {
+          const icsLines = [
+            'BEGIN:VCALENDAR',
+            'VERSION:2.0',
+            'PRODID:-//Ak Studio//Shubh Vivaah Aarav & Ananya//EN',
+            'BEGIN:VEVENT',
+            'UID:aarav-ananya-wedding-2027@akstudio',
+            'DTSTAMP:20261122T120000Z',
+            'DTSTART:20270212T170000Z',
+            'DTEND:20270213T183000Z',
+            'SUMMARY:Shubh Vivaah — Aarav & Ananya Wedding',
+            'DESCRIPTION:Baraat at 7:00 PM & Pheras at 10:30 PM, followed by Grand Reception on 13 Feb 2027.',
+            `LOCATION:${WEDDING_CONFIG.venueAddress}`,
+            'END:VEVENT',
+            'END:VCALENDAR'
+          ].join('\r\n');
+
+          try {
+            const blob = new Blob([icsLines], { type: 'text/calendar;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Aarav-Ananya-Wedding.ics';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+            showToast('Calendar invite (.ics) downloaded!');
+          } catch (err) {
+            showToast('Saved! See you on 12 February 2027');
+          }
+        });
+      }
+
+      /* ----------------------------------------------------------
+         7. LOOPING 3D SWIPEABLE CAROUSEL ENGINE
+         ---------------------------------------------------------- */
+      function create3DCarousel({ stageEl, dotsEl, prevBtn, nextBtn, items, renderCard, cardWidth }) {
+        let activeIndex = 0;
+        const total = items.length;
+        const cardEls = [];
+        const dotEls = [];
+
+        items.forEach((item, idx) => {
+          const card = document.createElement('div');
+          card.className = 'carousel-card';
+          card.style.width = `${cardWidth}px`;
+          card.innerHTML = renderCard(item, idx);
+          card.addEventListener('click', () => {
+            if (idx !== activeIndex) goTo(idx);
+          });
+          stageEl.appendChild(card);
+          cardEls.push(card);
+
+          const dot = document.createElement('button');
+          dot.type = 'button';
+          dot.setAttribute('aria-label', `Slide ${idx + 1}`);
+          dot.className = 'h-2 rounded-full transition-all duration-300';
+          dot.addEventListener('click', () => goTo(idx));
+          dotsEl.appendChild(dot);
+          dotEls.push(dot);
+        });
+
+        function getCircularOffset(idx, active) {
+          let diff = idx - active;
+          if (diff > total / 2) diff -= total;
+          if (diff < -total / 2) diff += total;
+          return diff;
+        }
+
+        function updateLayout(dragOffsetPx = 0) {
+          const dragShift = dragOffsetPx / 220;
+
+          cardEls.forEach((card, idx) => {
+            const rel = getCircularOffset(idx, activeIndex) + dragShift;
+            const absRel = Math.abs(rel);
+
+            if (absRel > 2.2) {
+              card.style.opacity = '0';
+              card.style.pointerEvents = 'none';
+              card.style.zIndex = '1';
+              card.style.transform = `translate(-50%, -50%) translateX(${rel * 165}px) scale(0.72)`;
+              return;
+            }
+
+            const translateX = rel * 168;
+            const scale = Math.max(0.76, 1 - absRel * 0.16);
+            const rotateY = Math.max(-24, Math.min(24, -rel * 15));
+            const opacity = Math.max(0.28, 1 - absRel * 0.42);
+            const blurPx = absRel < 0.15 ? 0 : Math.min(2.5, absRel * 1.6);
+
+            card.style.zIndex = String(20 - Math.round(absRel * 5));
+            card.style.opacity = String(opacity);
+            card.style.filter = blurPx > 0.1 ? `blur(${blurPx.toFixed(1)}px)` : 'none';
+            card.style.pointerEvents = absRel <= 1.2 ? 'auto' : 'none';
+            card.style.transform =
+              `translate(-50%, -50%) translateX(${translateX.toFixed(1)}px) scale(${scale.toFixed(3)}) rotateY(${rotateY.toFixed(1)}deg)`;
+          });
+
+          dotEls.forEach((dot, idx) => {
+            const active = idx === activeIndex;
+            dot.style.width = active ? '22px' : '7px';
+            dot.style.backgroundColor = active ? '#6e1f2f' : 'rgba(201, 162, 94, 0.45)';
+          });
+        }
+
+        function goTo(newIndex) {
+          activeIndex = ((newIndex % total) + total) % total;
+          updateLayout(0);
+        }
+
+        prevBtn.addEventListener('click', () => goTo(activeIndex - 1));
+        nextBtn.addEventListener('click', () => goTo(activeIndex + 1));
+
+        let startX = 0;
+        let startY = 0;
+        let dragging = false;
+        let lockedAxis = null;
+        let currentDx = 0;
+
+        stageEl.addEventListener('pointerdown', (e) => {
+          startX = e.clientX;
+          startY = e.clientY;
+          dragging = true;
+          lockedAxis = null;
+          currentDx = 0;
+        });
+
+        stageEl.addEventListener('pointermove', (e) => {
+          if (!dragging) return;
+          const dx = e.clientX - startX;
+          const dy = e.clientY - startY;
+
+          if (!lockedAxis && (Math.abs(dx) > 6 || Math.abs(dy) > 6)) {
+            lockedAxis = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+            if (lockedAxis === 'x') {
+              cardEls.forEach(c => c.classList.add('no-transition'));
+            }
+          }
+
+          if (lockedAxis === 'x') {
+            currentDx = dx;
+            updateLayout(dx * 0.85);
+          }
+        });
+
+        function finishSwipe() {
+          if (!dragging) return;
+          dragging = false;
+          cardEls.forEach(c => c.classList.remove('no-transition'));
+          if (lockedAxis === 'x') {
+            if (currentDx < -42) goTo(activeIndex + 1);
+            else if (currentDx > 42) goTo(activeIndex - 1);
+            else updateLayout(0);
+          }
+          lockedAxis = null;
+        }
+
+        stageEl.addEventListener('pointerup', finishSwipe);
+        stageEl.addEventListener('pointercancel', finishSwipe);
+        stageEl.addEventListener('pointerleave', finishSwipe);
+
+        updateLayout(0);
+      }
+
+      function initCarousels() {
+        create3DCarousel({
+          stageEl: document.getElementById('festivities-stage'),
+          dotsEl: document.getElementById('fest-dots'),
+          prevBtn: document.getElementById('fest-prev'),
+          nextBtn: document.getElementById('fest-next'),
+          items: FESTIVITIES_DATA,
+          cardWidth: 248,
+          renderCard: (item) => `
+            <article class="rounded-[24px] bg-white overflow-hidden border border-gold/30 shadow-[0_18px_38px_rgba(110,31,47,0.13)] text-center">
+              <div class="relative h-[156px] w-full overflow-hidden">
+                ${item.sceneBg}
+                <div class="absolute inset-x-0 bottom-0 h-14 bg-gradient-to-t from-white to-transparent"></div>
+              </div>
+              <div class="-mt-11 relative z-10 flex justify-center">
+                <div class="w-[68px] h-[68px] rounded-full bg-white shadow-[0_6px_18px_rgba(110,31,47,0.14)] border border-gold/25 flex items-center justify-center">
+                  ${item.iconSvg}
+                </div>
+              </div>
+              <div class="px-4 pt-3 pb-5">
+                <p class="text-[9px] tracking-[0.18em] uppercase text-goldDark font-semibold">${item.datetime}</p>
+                <h3 class="mt-1 font-serif text-[25px] leading-tight text-wine font-medium">${item.title}</h3>
+                <p class="mt-1.5 text-[11px] text-ink/70 min-h-[30px] leading-snug">${item.venue}</p>
+                <div class="mt-3.5 px-3 py-2.5 rounded-2xl bg-ivory border border-gold/30 flex items-center gap-3 text-left">
+                  <span class="w-9 h-9 rounded-xl shrink-0 border border-black/10 shadow-inner" style="${item.swatchStyle}"></span>
+                  <div class="min-w-0">
+                    <span class="block text-[8px] tracking-[0.18em] uppercase text-ink/55 font-semibold">Dress Code</span>
+                    <span class="block text-[11.5px] font-semibold text-ink leading-tight mt-0.5">${item.dressCode}</span>
+                  </div>
+                </div>
+              </div>
+            </article>
+          `
+        });
+
+        create3DCarousel({
+          stageEl: document.getElementById('story-stage'),
+          dotsEl: document.getElementById('story-dots'),
+          prevBtn: document.getElementById('story-prev'),
+          nextBtn: document.getElementById('story-next'),
+          items: STORY_DATA,
+          cardWidth: 244,
+          renderCard: (item) => `
+            <figure class="rounded-[24px] bg-white p-2.5 border border-gold/35 shadow-[0_18px_38px_rgba(110,31,47,0.13)]">
+              <div class="relative h-[278px] rounded-[18px] overflow-hidden border border-gold/25">
+                ${item.artworkSvg}
+                <div class="absolute inset-2 border border-white/30 rounded-[13px] pointer-events-none"></div>
+              </div>
+              <figcaption class="pt-3 pb-1.5 px-2 text-center">
+                <p class="font-serif text-[16.5px] text-wine font-medium leading-tight">${item.caption}</p>
+                <p class="mt-0.5 text-[10.5px] text-ink/65">${item.sub}</p>
+              </figcaption>
+            </figure>
+          `
+        });
+      }
+
+      /* ----------------------------------------------------------
+         8. COPY ADDRESS (execCommand) & INTERACTIVE RSVP
+         ---------------------------------------------------------- */
+      function initLocationAndRSVP() {
+        document.getElementById('copy-address-btn').addEventListener('click', () => {
+          const textarea = document.createElement('textarea');
+          textarea.value = WEDDING_CONFIG.venueAddress;
+          textarea.setAttribute('readonly', '');
+          textarea.style.position = 'fixed';
+          textarea.style.opacity = '0';
+          document.body.appendChild(textarea);
+          textarea.select();
+          try {
+            document.execCommand('copy');
+            showToast('Venue address copied to clipboard!');
+          } catch (err) {
+            showToast('Raj Vilas Palace, Jaipur 302002');
+          }
+          document.body.removeChild(textarea);
+        });
+
+        const form = document.getElementById('rsvp-form');
+        const confirmedBox = document.getElementById('rsvp-confirmed');
+        const nameInput = document.getElementById('rsvp-name');
+        const errText = document.getElementById('rsvp-error');
+        const attendBtns = document.querySelectorAll('.attend-btn');
+        const guestRow = document.getElementById('guest-count-row');
+        const guestsVal = document.getElementById('guests-value');
+        const minusBtn = document.getElementById('guests-minus');
+        const plusBtn = document.getElementById('guests-plus');
+        const thanksTitle = document.getElementById('rsvp-thanks-title');
+        const thanksBody = document.getElementById('rsvp-thanks-body');
+        const editBtn = document.getElementById('rsvp-edit-btn');
+
+        let attending = 'yes';
+        let guestCount = 2;
+
+        attendBtns.forEach((btn) => {
+          btn.addEventListener('click', () => {
+            attending = btn.getAttribute('data-attend');
+            attendBtns.forEach((b) => {
+              const active = b.getAttribute('data-attend') === attending;
+              b.className = active
+                ? 'attend-btn py-2.5 px-3 rounded-xl border border-wine bg-wine text-ivory text-[11px] font-semibold transition active:scale-95'
+                : 'attend-btn py-2.5 px-3 rounded-xl border border-gold/40 bg-ivory text-ink/75 text-[11px] font-medium transition active:scale-95';
+            });
+            guestRow.style.display = attending === 'yes' ? 'flex' : 'none';
+          });
+        });
+
+        minusBtn.addEventListener('click', () => {
+          guestCount = Math.max(1, guestCount - 1);
+          guestsVal.textContent = String(guestCount);
+        });
+
+        plusBtn.addEventListener('click', () => {
+          guestCount = Math.min(8, guestCount + 1);
+          guestsVal.textContent = String(guestCount);
+        });
+
+        nameInput.addEventListener('input', () => {
+          errText.classList.add('hidden');
+        });
+
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const guestName = nameInput.value.trim();
+          if (!guestName) {
+            errText.classList.remove('hidden');
+            nameInput.focus();
+            return;
+          }
+
+          form.classList.add('hidden');
+          confirmedBox.classList.remove('hidden');
+
+          if (attending === 'yes') {
+            thanksTitle.textContent = `Thank You, ${guestName}!`;
+            thanksBody.textContent = `We are delighted to reserve ${guestCount} ${guestCount === 1 ? 'seat' : 'seats'} for you. Can't wait to celebrate together at Raj Vilas Palace!`;
+            PetalsEngine.burst(0.5, 0.55, 44, true);
+          } else {
+            thanksTitle.textContent = `We'll Miss You, ${guestName}`;
+            thanksBody.textContent = `Thank you for sending your warm blessings to Aarav & Ananya. You will be in our hearts on our big day.`;
+          }
+          showToast('RSVP received with love!');
+        });
+
+        editBtn.addEventListener('click', () => {
+          confirmedBox.classList.add('hidden');
+          form.classList.remove('hidden');
+        });
+      }
+
+      /* ----------------------------------------------------------
+         9. SCROLL REVEAL, ROSE PARALLAX & MARIGOLD SCROLL SWING
+         ---------------------------------------------------------- */
+      function initScrollEffects() {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('in-view');
+                observer.unobserve(entry.target);
+              }
+            });
+          },
+          { threshold: 0.14 }
+        );
+
+        document.querySelectorAll('.reveal-item').forEach((el) => observer.observe(el));
+
+        const roseTL = document.getElementById('edge-rose-tl');
+        const roseTR = document.getElementById('edge-rose-tr');
+        const roseBL = document.getElementById('edge-rose-bl');
+        const roseBR = document.getElementById('edge-rose-br');
+        const garlandLeft = document.getElementById('garland-left');
+        const garlandRight = document.getElementById('garland-right');
+        let lastY = 0;
+        let ticking = false;
+
+        window.addEventListener('scroll', () => {
+          if (ticking) return;
+          ticking = true;
+          requestAnimationFrame(() => {
+            const y = window.scrollY || 0;
+            const velocity = Math.max(-6, Math.min(6, (y - lastY) * 0.18));
+            lastY = y;
+
+            const shiftA = Math.sin(y * 0.0025) * 10;
+            const shiftB = Math.cos(y * 0.0022) * 10;
+            if (roseTL) roseTL.style.transform = `translate3d(${shiftA.toFixed(1)}px, ${(shiftB * 0.6).toFixed(1)}px, 0)`;
+            if (roseTR) roseTR.style.transform = `translate3d(${(-shiftA).toFixed(1)}px, ${(shiftB * 0.7).toFixed(1)}px, 0)`;
+            if (roseBL) roseBL.style.transform = `translate3d(${(shiftB * 0.8).toFixed(1)}px, ${(-shiftA * 0.5).toFixed(1)}px, 0)`;
+            if (roseBR) roseBR.style.transform = `translate3d(${(-shiftB * 0.8).toFixed(1)}px, ${(shiftA * 0.5).toFixed(1)}px, 0)`;
+
+            // Subtle marigold garland swing reacting to scroll velocity
+            if (garlandLeft) garlandLeft.style.transform = `rotate(${(-velocity).toFixed(2)}deg)`;
+            if (garlandRight) garlandRight.style.transform = `rotate(${(velocity).toFixed(2)}deg)`;
+
+            ticking = false;
+          });
+        }, { passive: true });
+      }
+
+      /* ----------------------------------------------------------
+         INITIALIZE ALL MODULES ON LOAD
+         ---------------------------------------------------------- */
+      window.addEventListener('load', () => {
+        prepareHeroNames();
+        initBookOpening();
+        initPullScroll();
+        initCarousels();
+        initLocationAndRSVP();
+        initScrollEffects();
+      });
+    })();
+  </script>
+</body>
+</html>
+```
